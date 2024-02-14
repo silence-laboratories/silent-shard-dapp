@@ -11,5 +11,5 @@ steps:
     PASSWORD:
       from_secret: docker_password
   commands:
-  - apt update && apt install p7z-full
+  - apt update && apt install p7zip-full
   - echo $REACT_APP_SNAP_ID
