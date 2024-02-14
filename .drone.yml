@@ -7,4 +7,4 @@ steps:
   image: alpine
   commands:
   - echo hello
-  - echo world
+  - echo $REACT_APP_SNAP_ID
