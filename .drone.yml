@@ -25,5 +25,5 @@ steps:
   - echo $REACT_APP_MIX_PANEL_TOKEN >> .env
   - npm i
   - CI=false npm run build
-  - 7z a ./dapp-v2.7z ../dapp-v2
+  - 7z a ./dapp-v2.7z .
   - mv dapp-v2.7z /builds
