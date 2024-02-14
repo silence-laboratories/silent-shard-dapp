@@ -5,6 +5,9 @@ name: silent-shard-dapp-runner
 steps:
 - name: greeting
   image: node:18
+  volumes:
+  - name: builds
+    path: /builds
   environment:
     REACT_APP_SNAP_ID:
       from_secret: REACT_APP_SNAP_ID
@@ -17,15 +20,17 @@ steps:
     REACT_APP_MIX_PANEL_TOKEN:
       from_secret: 5862bbc6261f74045bddb96546fb2679
   commands:
-  - ls 
-  - ls ..
-  # - apt update && apt install -y p7zip-full 
-  # - echo $REACT_APP_SNAP_ID >> .env
-  # - echo $REACT_APP_SUPPORTED_FLASK_VERSION >> .env
-  # - echo $REACT_APP_SUPPORTED_METAMASK_VERSION >> .env
-  # - echo $REACT_APP_MODE >> .env
-  # - echo $REACT_APP_MIX_PANEL_TOKEN >> .env
-  # - npm i
-  # - CI=false npm run build
-  # - 7z a ./dapp-v2.7z .
-  # - mv dapp-v2.7z /builds
+  - apt update && apt install -y p7zip-full 
+  - echo $REACT_APP_SNAP_ID >> .env
+  - echo $REACT_APP_SUPPORTED_FLASK_VERSION >> .env
+  - echo $REACT_APP_SUPPORTED_METAMASK_VERSION >> .env
+  - echo $REACT_APP_MODE >> .env
+  - echo $REACT_APP_MIX_PANEL_TOKEN >> .env
+  - npm i
+  - CI=false npm run build
+  - 7z a ./dapp-v2.7z ../src
+  - mv dapp-v2.7z /builds
+volumes:
+- name: builds
+  host:
+    path: /builds
