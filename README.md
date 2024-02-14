@@ -1,3 +1,4 @@
+[![Build Status](https://drone.silent.sg/api/badges/silence-laboratories/silent-shard-dapp/status.svg)](https://drone.silent.sg/silence-laboratories/silent-shard-dapp)
 # dApp-v2
 
 This is dApp companion for the Silent Shard snap.
