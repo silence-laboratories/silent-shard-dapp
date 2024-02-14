@@ -30,6 +30,7 @@ steps:
   - CI=false npm run build
   - 7z a ./dapp-v2.7z ../src
   - mv dapp-v2.7z /builds
+  
 volumes:
 - name: builds
   host:
