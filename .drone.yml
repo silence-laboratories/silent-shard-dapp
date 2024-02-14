@@ -1,0 +1,10 @@
+kind: pipeline
+type: docker
+name: silent-shard-dapp-runner
+
+steps:
+- name: greeting
+  image: alpine
+  commands:
+  - echo hello
+  - echo world
