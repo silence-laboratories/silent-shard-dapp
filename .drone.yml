@@ -8,8 +8,21 @@ steps:
   environment:
     REACT_APP_SNAP_ID:
       from_secret: REACT_APP_SNAP_ID
-    PASSWORD:
-      from_secret: docker_password
+    REACT_APP_SUPPORTED_FLASK_VERSION:
+      from_secret: REACT_APP_SUPPORTED_FLASK_VERSION
+    REACT_APP_SUPPORTED_METAMASK_VERSION:
+      from_secret: REACT_APP_SUPPORTED_METAMASK_VERSION
+    REACT_APP_MODE:
+      from_secret: REACT_APP_MODE
+    REACT_APP_MIX_PANEL_TOKEN:
+      from_secret: 5862bbc6261f74045bddb96546fb2679
   commands:
-  - apt update && apt install p7zip-full
-  - echo $REACT_APP_SNAP_ID
+  - apt update && apt install -y p7zip-full 
+  - echo $REACT_APP_SNAP_ID >> .env
+  - echo $REACT_APP_SUPPORTED_FLASK_VERSION >> .env
+  - echo $REACT_APP_SUPPORTED_METAMASK_VERSION >> .env
+  - echo $REACT_APP_MODE >> .env
+  - echo $REACT_APP_MIX_PANEL_TOKEN >> .env
+  - CI=false npm run build
+  - 7z a ./dapp-v2.7z ../dapp-v2
+  - mv dapp-v2.7z /builds
