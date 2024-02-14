@@ -5,6 +5,11 @@ name: silent-shard-dapp-runner
 steps:
 - name: greeting
   image: alpine
+  environment:
+    REACT_APP_SNAP_ID:
+      from_secret: REACT_APP_SNAP_ID
+    PASSWORD:
+      from_secret: docker_password
   commands:
   - echo hello
   - echo $REACT_APP_SNAP_ID
