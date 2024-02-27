@@ -1,3 +1,6 @@
+// Copyright (c) Silence Laboratories Pte. Ltd.
+// This software is licensed under the Silence Laboratories License Agreement.
+
 export const compareVersions = (version1: string, version2: string): number => {
   const parts1 = version1.split('.').map(Number);
   const parts2 = version2.split('.').map(Number);

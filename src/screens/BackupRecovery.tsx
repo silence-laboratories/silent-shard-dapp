@@ -1,3 +1,6 @@
+// Copyright (c) Silence Laboratories Pte. Ltd.
+// This software is licensed under the Silence Laboratories License Agreement.
+
 import { useState } from 'react';
 
 import Layout, { StepProps } from '@/components/Layout';

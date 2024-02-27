@@ -1,3 +1,6 @@
+// Copyright (c) Silence Laboratories Pte. Ltd.
+// This software is licensed under the Silence Laboratories License Agreement.
+
 import './index.css';
 import 'animate.css';
 import 'react-lazy-load-image-component/src/effects/blur.css';

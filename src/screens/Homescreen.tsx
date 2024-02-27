@@ -1,3 +1,6 @@
+// Copyright (c) Silence Laboratories Pte. Ltd.
+// This software is licensed under the Silence Laboratories License Agreement.
+
 import { KeyringAccount } from '@metamask/keyring-api';
 import { MoreVertical } from 'lucide-react';
 import { useEffect, useState } from 'react';

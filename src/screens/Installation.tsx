@@ -1,3 +1,6 @@
+// Copyright (c) Silence Laboratories Pte. Ltd.
+// This software is licensed under the Silence Laboratories License Agreement.
+
 import { useState } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 

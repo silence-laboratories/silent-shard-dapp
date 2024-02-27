@@ -1,3 +1,6 @@
+// Copyright (c) Silence Laboratories Pte. Ltd.
+// This software is licensed under the Silence Laboratories License Agreement.
+
 import { QRCodeSVG } from 'qrcode.react';
 
 import Layout, { StepProps } from '@/components/Layout';
