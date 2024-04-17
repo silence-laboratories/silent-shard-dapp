@@ -948,7 +948,7 @@ const App = () => {
             size={190}
             className="max-h-[20.85vh] max-w-max bg-white-primary rounded-[8px] py-4 aspect-square"
             value={
-              MODE == 'PROD'
+              MODE === 'PROD'
                 ? 'https://snap.silencelaboratories.com'
                 : 'https://snap-staging.silencelaboratories.com'
             }
