@@ -1,4 +1,12 @@
-export function checkPassword(password: string) {
+export interface PasswordCheck {
+    lengthCheck: boolean;
+    numberCheck: boolean;
+    lowerCaseCheck: boolean;
+    upperCaseCheck: boolean;
+    specialCharCheck: boolean;
+}
+
+export function checkPassword(password: string): PasswordCheck {
     // At least 8 characters
     var lengthCheck = password.length >= 8;
 
@@ -16,16 +24,11 @@ export function checkPassword(password: string) {
         password
     );
 
-    // Check all conditions
-    if (
-        lengthCheck &&
-        numberCheck &&
-        lowerCaseCheck &&
-        upperCaseCheck &&
-        specialCharCheck
-    ) {
-        return true;
-    } else {
-        return false;
-    }
+    return {
+        lengthCheck,
+        numberCheck,
+        lowerCaseCheck,
+        upperCaseCheck,
+        specialCharCheck,
+    };
 }

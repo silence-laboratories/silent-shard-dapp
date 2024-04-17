@@ -4,9 +4,8 @@
 import { SnapError, SnapErrorCode } from './error';
 import { JsonTx } from '@ethereumjs/tx';
 import type { Json } from '@metamask/utils';
-import { randBytes } from '@silencelaboratories/ecdsa-tss';
 import { pubToAddress } from 'ethereumjs-util';
-import _sodium from 'libsodium-wrappers';
+import _sodium from 'libsodium-wrappers-sumo';
 import { DistributedKey } from './types';
 
 export const fromHexStringToBytes = (hexString: string) => {
