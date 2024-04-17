@@ -5,6 +5,7 @@ import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { KeyringAccount } from '@metamask/keyring-api';
+import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -56,6 +57,8 @@ import MismatchRepairing from './screens/MismatchRepairing';
 import Pairing from './screens/Pairing';
 import { AppState, AppStatus, DeviceOS, ProviderRpcError, SnapMetaData } from './types';
 
+const MODE = process.env.REACT_APP_MODE!;
+
 let provider: EIP1193Provider;
 const App = () => {
   const isMobileWidthSize = window.innerWidth < 640;
@@ -64,6 +67,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [openInstallDialog, setOpenInstallDialog] = useState(false);
   const [openMmConnectDialog, setOpenMmConnectDialog] = useState(false);
+  const [openAppQRDialog, setOpenAppQRDialog] = useState(false);
   const [appState, setAppState] = useState<AppState>({ status: AppStatus.Unpaired });
   const [snapMetadata, setSnapMetadata] = useState<SnapMetaData | undefined>();
   const [deviceOS, setDeviceOS] = useState<DeviceOS>(DeviceOS.android);
@@ -182,17 +186,7 @@ const App = () => {
     try {
       await handleMetaMaskConnect();
       await handleRequestSnap();
-      if (await isConnected(provider)) {
-        await handleInitPairing().then((isInitPairingDone) => {
-          if (isInitPairingDone) {
-            handleRunPairing().then((isPairingDone) => {
-              if (isPairingDone) {
-                handleCreateAccount();
-              }
-            });
-          }
-        });
-      }
+      setOpenAppQRDialog(true);
     } catch (error) {
       if (error instanceof SnapError) {
         handleSnapErrorTemplate(error);
@@ -324,6 +318,20 @@ const App = () => {
           });
         });
       }
+    }
+  };
+
+  const handlePairing = async () => {
+    if (await isConnected(provider)) {
+      await handleInitPairing().then((isInitPairingDone) => {
+        if (isInitPairingDone) {
+          handleRunPairing().then((isPairingDone) => {
+            if (isPairingDone) {
+              handleCreateAccount();
+            }
+          });
+        }
+      });
     }
   };
 
@@ -826,15 +834,7 @@ const App = () => {
                       if (appState.status === AppStatus.RePairing) {
                         await handleRePairing();
                       } else {
-                        await handleInitPairing().then((isInitPairingDone) => {
-                          if (isInitPairingDone) {
-                            handleRunPairing().then((isPairingDone) => {
-                              if (isPairingDone) {
-                                handleCreateAccount();
-                              }
-                            });
-                          }
-                        });
+                        await handlePairing();
                       }
                     }}
                     loading={appState.status === AppStatus.Paired}
@@ -925,6 +925,63 @@ const App = () => {
           </DialogContent>
         </Dialog>
       )}
+      <Dialog open={openAppQRDialog} onOpenChange={setOpenAppQRDialog}>
+        <DialogContent
+          className="flex flex-col items-center justify-center py-14 px-24 w-[49.53vw] h-auto bg-[#121212] border-none outline-none max-w-[634px]"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}>
+          <div
+            className="mt-2 text-center text-white-primary"
+            style={{ fontSize: 24, fontWeight: 500 }}>
+            Download the Silent Shard app to make your phone the 2FA sidekick!‍
+          </div>
+          <div
+            className="mt-1 text-center text-white-primary"
+            style={{ fontSize: 14, fontWeight: 400 }}>
+            ✨ Scan the QR code with your camera or Google Lens or click on the download links below
+            to download the app ✨
+          </div>
+          <QRCodeSVG
+            fgColor="#000"
+            bgColor="#FFF"
+            size={190}
+            className="max-h-[20.85vh] max-w-max bg-white-primary rounded-[8px] py-4 aspect-square"
+            value={
+              MODE == 'PROD'
+                ? 'https://snap.silencelaboratories.com'
+                : 'https://snap-staging.silencelaboratories.com'
+            }
+          />
+          <div id="top" className="flex md:flex-row justify-between flex-col items-center gap-10">
+            <Button
+              className="mx-sm:p-18 w-[144px] mt-2 h-[44px] bg-gray-primary hover:bg-gray-hover active:bg-gray-active text-black-primary btn-lg whitespace-normal rounded-none "
+              onClick={async () => {
+                window.open('https://apps.apple.com/in/app/silent-shard/id6468993285', '_blank');
+              }}>
+              App store
+            </Button>
+            <Button
+              className="max-sm:p-10 w-[144px] mt-2 h-[44px] bg-gray-primary hover:bg-gray-hover active:bg-gray-active text-black-primary btn-lg whitespace-normal rounded-none"
+              onClick={async () => {
+                window.open(
+                  'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard',
+                  '_blank'
+                );
+              }}>
+              Play store
+            </Button>
+          </div>
+          <Button
+            className="max-sm:p-8 w-[306px] mt-2 h-[48px] bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active text-white-primary btn-lg whitespace-normal "
+            onClick={async () => {
+              setOpenAppQRDialog(false);
+              await handlePairing();
+            }}>
+            Done
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={openMmConnectDialog} onOpenChange={setOpenMmConnectDialog}>
         <DialogContent
