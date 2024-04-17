@@ -10,7 +10,7 @@ import {
 import _sodium from 'libsodium-wrappers';
 import { DistributedKey, PairingData } from '../types';
 import { SnapError, SnapErrorCode } from '../error';
-import { decMessage } from '../entropy';
+import { aeadDecrypt } from '../crypto';
 import { v4 as uuid } from 'uuid';
 
 export enum PairingRemark {
@@ -71,9 +71,10 @@ const sendPairingFirebaseDoc = async (
 const decryptAndDeserializeBackupData = async (
 	token: string,
 	backupData: string,
+	password: string
 ): Promise<{ distributedKey: DistributedKey; accountAddress: string }> => {
 	try {
-		const decreptedMessage = await decMessage(backupData);
+		const decreptedMessage = await aeadDecrypt(backupData, password);
 		const distributedKey = JSON.parse(
 			utils.uint8ArrayToUtf8String(decreptedMessage),
 		);
@@ -125,7 +126,7 @@ const validatePairingAccount = async (
 		});
 };
 
-export const getPairingSessionData = async (currentAccountAddress?: string) => {
+export const getPairingSessionData = async (currentAccountAddress?: string, password?: string) => {
 	try {
 		if (!pairingDataInit) {
 			throw new SnapError(
@@ -149,10 +150,11 @@ export const getPairingSessionData = async (currentAccountAddress?: string) => {
 
 		let distributedKey: DistributedKey | undefined;
 		let accountAddress: string | undefined;
-		if (pairingResponse.backupData) {
+		if (pairingResponse.backupData && password) {
 			const backupDataJson = await decryptAndDeserializeBackupData(
 				sessionToken,
 				pairingResponse.backupData,
+				password
 			);
 			distributedKey = backupDataJson.distributedKey;
 			accountAddress = backupDataJson.accountAddress;
