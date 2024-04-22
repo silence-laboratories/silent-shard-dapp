@@ -927,7 +927,7 @@ const App = () => {
       )}
       <Dialog open={openAppQRDialog} onOpenChange={setOpenAppQRDialog}>
         <DialogContent
-          className="flex flex-col items-center justify-center py-14 px-24 w-[49.53vw] h-auto bg-[#121212] border-none outline-none max-w-[634px]"
+          className="flex flex-col items-center justify-center py-14 px-24 h-auto bg-[#121212] border-none outline-none max-w-[634px] min-w-[450px]"
           onInteractOutside={(e) => {
             e.preventDefault();
           }}>
@@ -953,27 +953,35 @@ const App = () => {
                 : 'https://snap-staging.silencelaboratories.com'
             }
           />
-          <div id="top" className="flex md:flex-row justify-between flex-col items-center gap-10">
+          <div
+            id="top"
+            className="flex md:flex-row justify-between items-center flex-col gap-5 w-2/3 ">
             <Button
-              className="mx-sm:p-18 w-[144px] mt-2 h-[44px] bg-gray-primary hover:bg-gray-hover active:bg-gray-active text-black-primary btn-lg whitespace-normal rounded-none "
+              className="max-sm:p-8 w-[100%] mt-2 h-[40px] text-white-primary whitespace-normal bg-transparent border text-xs gap-1 hover:bg-gray-700 font-normal"
               onClick={async () => {
                 window.open('https://apps.apple.com/in/app/silent-shard/id6468993285', '_blank');
               }}>
+              <img
+                src="/v2/appleLogo.png"
+                alt="mmfox"
+                style={{ width: 24, height: 24, marginBottom: 4 }}
+              />
               App store
             </Button>
             <Button
-              className="max-sm:p-10 w-[144px] mt-2 h-[44px] bg-gray-primary hover:bg-gray-hover active:bg-gray-active text-black-primary btn-lg whitespace-normal rounded-none"
+              className="max-sm:p-8 w-[100%] mt-2 h-[40px] text-white-primary whitespace-normal bg-transparent border text-xs gap-1 hover:bg-gray-700 font-normal"
               onClick={async () => {
                 window.open(
                   'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard',
                   '_blank'
                 );
               }}>
+              <img src="/v2/playLogo.png" alt="mmfox" style={{ width: 24, height: 24 }} />
               Play store
             </Button>
           </div>
           <Button
-            className="max-sm:p-8 w-[306px] mt-2 h-[48px] bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active text-white-primary btn-lg whitespace-normal "
+            className="max-sm:p-8 w-2/3 mt-2 h-[48px] bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active text-white-primary btn-lg whitespace-normal "
             onClick={async () => {
               setOpenAppQRDialog(false);
               await handlePairing();
