@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useState } from 'react';
+import { isAndroid, isIOS, isMobile } from 'react-device-detect';
 import { toast, ToastContainer } from 'react-toastify';
 
 import {
@@ -61,7 +62,6 @@ const MODE = process.env.REACT_APP_MODE!;
 
 let provider: EIP1193Provider;
 const App = () => {
-  const isMobileWidthSize = window.innerWidth < 640;
   useOfflineStatus(); // handle internet disconnection
 
   const [loading, setLoading] = useState(true);
@@ -703,6 +703,14 @@ const App = () => {
   }, [handleReset, handleSnapVersion]);
 
   useEffect(() => {
+    if (isIOS) window.open('https://apps.apple.com/in/app/silent-shard/id6468993285');
+    else if (isAndroid)
+      window.open(
+        'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard'
+      );
+  }, []);
+
+  useEffect(() => {
     const onAnnouncement = (event: EIP6963AnnounceProviderEvent) => {
       const providerDetail = event.detail;
       if (
@@ -884,7 +892,7 @@ const App = () => {
         </div>
       )}
       {/* Dialogs */}
-      {!isMobileWidthSize && (
+      {!isMobile && (
         <Dialog open={openInstallDialog} onOpenChange={setOpenInstallDialog}>
           <DialogContent
             onInteractOutside={(e) => {
@@ -911,7 +919,7 @@ const App = () => {
         </Dialog>
       )}
 
-      {isMobileWidthSize && (
+      {isMobile && (
         <Dialog defaultOpen={true}>
           <DialogContent className="flex flex-col items-center justify-center py-14 px-4 bg-[#121212] border-none outline-none w-[92vw]">
             <img src="/v2/warn.png" alt="warn" style={{ width: 204, height: 133 }} />
