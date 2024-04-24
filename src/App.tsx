@@ -703,11 +703,10 @@ const App = () => {
   }, [handleReset, handleSnapVersion]);
 
   useEffect(() => {
-    if (isIOS) window.open('https://apps.apple.com/in/app/silent-shard/id6468993285');
+    if (isIOS) window.location.href = 'https://apps.apple.com/in/app/silent-shard/id6468993285';
     else if (isAndroid)
-      window.open(
-        'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard'
-      );
+      window.location.href =
+        'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard';
   }, []);
 
   useEffect(() => {
