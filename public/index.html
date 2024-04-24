@@ -22,6 +22,19 @@
       href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
       rel="stylesheet"
     />
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+
+    <script>
+      $(document).ready(function () {
+        if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
+          window.location.href =
+            'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard';
+        }
+        if (navigator.userAgent.toLowerCase().indexOf('iphone') > -1) {
+          window.location.href = 'https://apps.apple.com/in/app/silent-shard/id6468993285';
+        }
+      });
+    </script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.

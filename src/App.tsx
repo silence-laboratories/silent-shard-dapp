@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useState } from 'react';
-import { isAndroid, isIOS, isMobile } from 'react-device-detect';
+import { isMobile } from 'react-device-detect';
 import { toast, ToastContainer } from 'react-toastify';
 
 import {
@@ -701,13 +701,6 @@ const App = () => {
       }
     }
   }, [handleReset, handleSnapVersion]);
-
-  useEffect(() => {
-    if (isIOS) window.location.href = 'https://apps.apple.com/in/app/silent-shard/id6468993285';
-    else if (isAndroid)
-      window.location.href =
-        'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard';
-  }, []);
 
   useEffect(() => {
     const onAnnouncement = (event: EIP6963AnnounceProviderEvent) => {
