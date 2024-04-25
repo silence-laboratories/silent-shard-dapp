@@ -11,6 +11,8 @@ import {
   CarouselContent,
   CarouselDots,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
@@ -23,8 +25,8 @@ const BackupRecovery: React.FC<{
 
   return (
     <div className="desc animate__animated animate__slideInUp animate__faster">
-      <Layout disabled={true} step={step} className="h-max">
-        <div className="flex full-w justify-between mt-4">
+      <Layout disabled={true} step={step} className="h-max px-0" buttonClassName="ml-10">
+        <div className="flex full-w justify-between mt-4 px-10">
           <div className="text-white-primary h2-bold">Don’t forget to backup on your phone</div>
           <div
             className="flex items-center cursor-pointer"
@@ -49,12 +51,14 @@ const BackupRecovery: React.FC<{
             </svg>
           </div>
         </div>
-        <p className="mt-2 text-[#B6BAC3] b2-regular">
-          Save backups on <span className="b2-bold">your Mobile Application</span> to recover your
-          accounts any time without worry of device loss.
-        </p>
-        <div className="text-[#B6BAC3] mt-4 mb-3 label-md text-center">
-          2 Ways you can backup your wallet
+        <div className="px-10">
+          <p className="mt-2 text-[#B6BAC3] b2-regular">
+            Save backups <span className="b2-bold text-[#EDEEF1]">on your Mobile Application</span>{' '}
+            to recover your accounts any time without worry of device loss.
+          </p>
+          <div className="text-[#B6BAC3] mt-4 mb-3 label-md text-center">
+            2 Ways you can backup your wallet
+          </div>
         </div>
         <CarouselWrapper deviceOS={deviceOS}></CarouselWrapper>
         <Button
@@ -86,7 +90,9 @@ const StorageBackupContent: React.FC<{ deviceOS: string; isBlur: boolean }> = ({
   isBlur = false,
 }) => {
   return (
-    <div className="relative flex p-2" style={{ background: '#111112', borderRadius: '8px' }}>
+    <div
+      className="relative flex p-2 w-[385px]"
+      style={{ background: '#111112', borderRadius: '8px' }}>
       {isBlur && (
         <div
           className="w-full h-full bg-[#111112] absolute"
@@ -141,7 +147,7 @@ const StorageBackupContent: React.FC<{ deviceOS: string; isBlur: boolean }> = ({
         </div>
         <p className="text-[#B6BAC3] label-regular">
           {deviceOS === 'android'
-            ? 'Store backup on Google Password Manager using your preferred email address. This email will be used for future recovery processes.'
+            ? 'Store backup on Google Password Manager using your preferred gmail account. The same account will be used for future recovery processes.'
             : 'Store backup on iCloud Keychain using your Apple ID. This Apple ID will be used for future recovery processes.'}
         </p>
       </div>
@@ -153,7 +159,9 @@ const FileBackupInstruction: React.FunctionComponent<{ isBlur: boolean }> = ({
   isBlur = false,
 }) => {
   return (
-    <div className="relative flex p-2" style={{ background: '#111112', borderRadius: '8px' }}>
+    <div
+      className="relative flex p-2 w-[385px]"
+      style={{ background: '#111112', borderRadius: '8px' }}>
       {isBlur && (
         <div
           className="w-full h-full bg-[#111112] absolute"
@@ -206,8 +214,9 @@ const FileBackupInstruction: React.FunctionComponent<{ isBlur: boolean }> = ({
         </div>
         <div className="text-[#F7F8F8] b2-regular mb-1">Export wallet</div>
         <p className="text-[#B6BAC3] label-regular">
-          Backup your wallet anytime by exporting it and saving it in your{' '}
-          <b>File Manager/Google Drive</b> etc.
+          Backup your wallet anytime by exporting it and saving it in any file storage or password
+          managers of your choice i.e.{' '}
+          <span className="label-bold">Device Storage/Google Drive</span> etc.
         </p>
       </div>
     </div>
@@ -224,8 +233,6 @@ const CarouselWrapper: React.FunctionComponent<{
       return;
     }
 
-    // setCurrent(api.selectedScrollSnap());
-
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap());
     });
@@ -240,13 +247,17 @@ const CarouselWrapper: React.FunctionComponent<{
       setApi={setApi}
       className="w-full">
       <CarouselContent>
-        <CarouselItem className="basis-4/5 pl-10" key={0}>
+        <CarouselItem className="basis-[88%] pl-32" key={0}>
           <StorageBackupContent deviceOS={deviceOS} isBlur={current === 1} />
         </CarouselItem>
-        <CarouselItem className="basis-4/5 pl-10" key={1}>
+        <CarouselItem className="basis-[80%] -ml-12" key={1}>
           <FileBackupInstruction isBlur={current === 0} />
         </CarouselItem>
       </CarouselContent>
+      {current === 0 && <CarouselNext className=" bg-transparent hover:bg-transparent -right-0" />}
+      {current === 1 && (
+        <CarouselPrevious className=" bg-transparent hover:bg-transparent -left-0" />
+      )}
       <CarouselDots className="absolute -bottom-5 left-1/2 -translate-x-1/2 cursor-pointer" />
     </Carousel>
   );

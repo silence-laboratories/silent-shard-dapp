@@ -225,7 +225,7 @@ const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
 CarouselItem.displayName = 'CarouselItem';
 
 const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
-  ({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
+  ({ className, variant = 'ghost', size = 'icon', ...props }, ref) => {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
     return (
@@ -243,7 +243,19 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         {...props}>
-        <ArrowLeft className="h-4 w-4" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M16.1705 4.4545C16.6098 4.89384 16.6098 5.60616 16.1705 6.0455L10.216 12L16.1705 17.9545C16.6098 18.3938 16.6098 19.1062 16.1705 19.5455C15.7312 19.9848 15.0188 19.9848 14.5795 19.5455L7.8295 12.7955C7.39017 12.3562 7.39017 11.6438 7.8295 11.2045L14.5795 4.4545C15.0188 4.01517 15.7312 4.01517 16.1705 4.4545Z"
+            fill="#B1BBC8"
+          />
+        </svg>
         <span className="sr-only">Previous slide</span>
       </Button>
     );
@@ -252,7 +264,7 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
 CarouselPrevious.displayName = 'CarouselPrevious';
 
 const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
-  ({ className, variant = 'outline', size = 'icon', ...props }, ref) => {
+  ({ className, variant = 'ghost', size = 'icon', ...props }, ref) => {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
 
     return (
@@ -270,7 +282,19 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         disabled={!canScrollNext}
         onClick={scrollNext}
         {...props}>
-        <ArrowRight className="h-4 w-4" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M7.8295 4.4545C7.39017 4.89384 7.39017 5.60616 7.8295 6.0455L13.784 12L7.8295 17.9545C7.39017 18.3938 7.39017 19.1062 7.8295 19.5455C8.26884 19.9848 8.98116 19.9848 9.4205 19.5455L16.1705 12.7955C16.6098 12.3562 16.6098 11.6438 16.1705 11.2045L9.4205 4.4545C8.98116 4.01517 8.26884 4.01517 7.8295 4.4545Z"
+            fill="#B1BBC8"
+          />
+        </svg>
         <span className="sr-only">Next slide</span>
       </Button>
     );
@@ -293,8 +317,8 @@ const CarouselDots = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
               key={index}
               aria-label={`Slide - ${index}`}
               xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
+              width="12"
+              height="12"
               viewBox="0 0 12 12"
               fill="none">
               <circle cx="6" cy="6" r="3" fill="#745EF6" />
@@ -306,8 +330,8 @@ const CarouselDots = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
               key={index}
               aria-label={`Slide - ${index}`}
               xmlns="http://www.w3.org/2000/svg"
-              width="10"
-              height="10"
+              width="8"
+              height="8"
               viewBox="0 0 8 8"
               fill="none">
               <circle cx="4" cy="4" r="4" fill="#343A46" />
