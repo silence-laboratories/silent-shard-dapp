@@ -61,11 +61,13 @@ const BackupRecovery: React.FC<{
           </div>
         </div>
         <CarouselWrapper deviceOS={deviceOS}></CarouselWrapper>
-        <Button
-          className="max-sm:p-8 w-full lg:w-1/2 bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active self-center mt-8 text-white-primary btn-lg"
-          onClick={onDone}>
-          I understand
-        </Button>
+        <div className="px-10 flex justify-center">
+          <Button
+            className="max-sm:p-8 w-full lg:w-1/2 bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active self-center mt-8 text-white-primary btn-lg"
+            onClick={onDone}>
+            I understand
+          </Button>
+        </div>
       </Layout>
 
       <Dialog open={openHowBackupDialog} onOpenChange={setOpenHowBackupDialog}>
@@ -91,19 +93,11 @@ const StorageBackupContent: React.FC<{ deviceOS: string; isBlur: boolean }> = ({
 }) => {
   return (
     <div
-      className="relative flex p-2 w-[385px]"
-      style={{ background: '#111112', borderRadius: '8px' }}>
-      {isBlur && (
-        <div
-          className="w-full h-full bg-[#111112] absolute"
-          style={{
-            opacity: 0.5,
-          }}></div>
-      )}
-
+      className="relative flex p-2 w-[385px] lg:w-[24vw]"
+      style={{ background: '#111112', borderRadius: '8px', opacity: `${isBlur ? '0.5' : '1'}` }}>
       <img
         className="mr-3 h-[223px] w-[104px] flex-none"
-        src="/v2/backup2.gif"
+        src="/v2/backup_gpm.gif"
         alt="laptop"
         style={{ height: 'auto' }}
       />
@@ -160,19 +154,11 @@ const FileBackupInstruction: React.FunctionComponent<{ isBlur: boolean }> = ({
 }) => {
   return (
     <div
-      className="relative flex p-2 w-[385px]"
-      style={{ background: '#111112', borderRadius: '8px' }}>
-      {isBlur && (
-        <div
-          className="w-full h-full bg-[#111112] absolute"
-          style={{
-            opacity: 0.5,
-          }}></div>
-      )}
-
+      className="relative flex p-2 w-[385px] lg:w-[24vw]"
+      style={{ background: '#111112', borderRadius: '8px', opacity: `${isBlur ? '0.5' : '1'}` }}>
       <img
         className="mr-3 h-[223px] w-[104px] flex-none"
-        src="/v2/backup2.gif"
+        src="/v2/backup_export.gif"
         alt="laptop"
         style={{ height: 'auto' }}
       />
@@ -247,10 +233,10 @@ const CarouselWrapper: React.FunctionComponent<{
       setApi={setApi}
       className="w-full">
       <CarouselContent>
-        <CarouselItem className="basis-[88%] pl-32" key={0}>
+        <CarouselItem className="basis-[88%] lg:basis-[98%] pl-32" key={0}>
           <StorageBackupContent deviceOS={deviceOS} isBlur={current === 1} />
         </CarouselItem>
-        <CarouselItem className="basis-[80%] -ml-12" key={1}>
+        <CarouselItem className="basis-[80%] -ml-12 lg:basis-[84%] lg:-ml-20" key={1}>
           <FileBackupInstruction isBlur={current === 0} />
         </CarouselItem>
       </CarouselContent>
