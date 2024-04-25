@@ -16,6 +16,7 @@ export interface StepProps {
 interface StepNavigatorProps {
   children: React.ReactNode;
   className?: string;
+  buttonClassName?: string;
   step?: StepProps;
   overlay?: boolean;
   disabled?: boolean;
@@ -23,6 +24,7 @@ interface StepNavigatorProps {
 
 const Layout: React.FunctionComponent<StepNavigatorProps> = ({
   className,
+  buttonClassName,
   children,
   step,
   overlay,
@@ -39,7 +41,7 @@ const Layout: React.FunctionComponent<StepNavigatorProps> = ({
           <Progress className="w-[99.5%]" value={step.progressBarValue} style={{ height: '4px' }} />
         </div>
         <Button
-          className="rounded-full bg-gray-custom min-w-max aspect-square"
+          className={cn('rounded-full bg-gray-custom min-w-max aspect-square', buttonClassName)}
           size="icon"
           disabled={disabled}
           onClick={() => {
