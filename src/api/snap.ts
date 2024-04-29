@@ -98,6 +98,10 @@ const snapVersion = async (provider: EIP1193Provider) => {
   return await callSnap<SnapVersionResponse>(provider, 'tss_snapVersion', null);
 };
 
+const postSnapUpdate = async (provider: EIP1193Provider) => {
+  return await callSnap<SnapVersionResponse>(provider, 'tss_updateSnap', null);
+};
+
 const callSnap = async <T>(
   provider: EIP1193Provider,
   method: string,
@@ -148,6 +152,7 @@ export {
   isConnected,
   isPaired,
   parseRpcError,
+  postSnapUpdate,
   runKeygen,
   runPairing,
   runRePairing,
