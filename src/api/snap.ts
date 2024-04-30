@@ -99,7 +99,12 @@ const snapVersion = async (provider: EIP1193Provider) => {
 };
 
 const setSnapVersion = async (provider: EIP1193Provider) => {
-  return await callSnap<SnapVersionResponse>(provider, 'tss_setSnapVersion', null);
+  try {
+    await callSnap<SnapVersionResponse>(provider, 'tss_setSnapVersion', null);
+  } catch (e) {
+    console.log('Error in tss_setSnapVersion (Please update the snap): ', e);
+    // Not supported by old snaps
+  }
 };
 
 const callSnap = async <T>(

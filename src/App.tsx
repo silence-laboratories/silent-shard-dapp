@@ -674,6 +674,7 @@ const App = () => {
         await handleSnapVersion();
         const isPairedRes = await isPaired(provider);
         if (isPairedRes.response?.isPaired) {
+          await setSnapVersion(provider);
           const accounts = await getKeyringClient(provider).listAccounts();
           if (accounts.length === 0) {
             if (isPairedRes.response.isAccountExist) {
