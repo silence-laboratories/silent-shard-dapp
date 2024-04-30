@@ -54,7 +54,7 @@ const BackupRecovery: React.FC<{
         <div className="px-10">
           <p className="mt-2 text-[#B6BAC3] b2-regular">
             Save backups <span className="b2-bold text-[#EDEEF1]">on your Mobile Application</span>{' '}
-            to recover your accounts any time without worry of device loss.
+            to recover your accounts anytime without worry of device loss.
           </p>
           <div className="text-[#B6BAC3] mt-4 mb-3 label-md text-center">
             2 Ways you can backup your wallet
