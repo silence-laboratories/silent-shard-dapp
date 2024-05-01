@@ -32,14 +32,9 @@ const Installation: React.FC<InstallationProps> = ({ onConnectMmClick }) => {
     <div>
       <div className={`flex flex-col justify-center items-center`}>
         <Layout className="h-max">
-          <div className="flex items-center mt-4">
-            <div className="w-[24px]"></div>
-            <div className="h2-bold text-white-primary mx-auto">Silent Shard Snap for MetaMask</div>
-            <a
-              className=""
-              href="http://silencelaboratories.com/snap"
-              target="_blank"
-              rel="noreferrer">
+          <div className="flex items-center justify-between mt-4">
+            <div className="h2-bold text-white-primary">Silent Shard Snap for MetaMask</div>
+            <a href="http://silencelaboratories.com/snap" target="_blank" rel="noreferrer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -59,7 +54,7 @@ const Installation: React.FC<InstallationProps> = ({ onConnectMmClick }) => {
               </svg>
             </a>
           </div>
-          <p className="b2-bold text-[#B6BAC3] mt-3 text-center">
+          <p className="b2-regular text-[#B6BAC3] mt-3">
             Get seamless 2FA security for your MetaMask wallet
           </p>
           <div className="b2-regular p-2 flex items-start rounded-[8px] border bg-[rgba(96,154,250,0.1)] border-[#1e55af] text-[#BFD7FE] my-6">
@@ -83,7 +78,7 @@ const Installation: React.FC<InstallationProps> = ({ onConnectMmClick }) => {
               wrapperProps={{ style: { display: 'contents' } }}
               src="/v2/mmconnect.gif"
               alt="mmconnect"
-              className="w-[554px] h-[254px] border rounded-[8px] border-gray-700"
+              className="h-auto border rounded-[8px] border-gray-700"
             />
             <Button
               className="max-sm:p-8 w-full mt-8 h-10 bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active text-white-primary btn-lg whitespace-normal"
