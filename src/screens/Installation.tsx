@@ -34,7 +34,7 @@ const Installation: React.FC<InstallationProps> = ({ onConnectMmClick }) => {
         <Layout className="h-max">
           <div className="flex items-center mt-4">
             <div className="w-[24px]"></div>
-            <div className="h2-bold text-white-primary mx-auto">Connect MetaMask Extension</div>
+            <div className="h2-bold text-white-primary mx-auto">Silent Shard Snap for MetaMask</div>
             <a
               className=""
               href="http://silencelaboratories.com/snap"
