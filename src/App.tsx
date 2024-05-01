@@ -40,6 +40,7 @@ import {
   runKeygen,
   runPairing,
   runRePairing,
+  setSnapVersion,
   snapVersion,
   unPair,
 } from './api/snap';
@@ -63,6 +64,11 @@ const MODE = process.env.REACT_APP_MODE!;
 let provider: EIP1193Provider;
 const App = () => {
   useOfflineStatus(); // handle internet disconnection
+
+  // Only for staging, get snapVersion from url params
+  const urlSearchString = window.location.search;
+  const params = new URLSearchParams(urlSearchString);
+  const snapVersionFromParams = MODE == 'PROD' ? null : params.get('snapVersion');
 
   const [loading, setLoading] = useState(true);
   const [openInstallDialog, setOpenInstallDialog] = useState(false);
@@ -148,7 +154,7 @@ const App = () => {
 
   const handleRequestSnap = async () => {
     try {
-      await connectSnap(snapMetadata?.latestSnapVersion || null, provider);
+      await connectSnap(snapMetadata?.latestSnapVersion || snapVersionFromParams, provider);
       trackAnalyticEvent(
         EventName.install_snap,
         new AnalyticEvent() //
@@ -326,6 +332,7 @@ const App = () => {
       await handleInitPairing().then((isInitPairingDone) => {
         if (isInitPairingDone) {
           handleRunPairing().then((isPairingDone) => {
+            setSnapVersion(provider);
             if (isPairingDone) {
               handleCreateAccount();
             }
@@ -633,6 +640,7 @@ const App = () => {
           ...snapMetadata,
           currentSnapVersion: snapMetadata.latestSnapVersion,
         });
+        await setSnapVersion(provider);
       } catch (error) {
         if (error instanceof SnapError) {
           if (error.code === 4001) {
@@ -666,6 +674,7 @@ const App = () => {
         await handleSnapVersion();
         const isPairedRes = await isPaired(provider);
         if (isPairedRes.response?.isPaired) {
+          await setSnapVersion(provider);
           const accounts = await getKeyringClient(provider).listAccounts();
           if (accounts.length === 0) {
             if (isPairedRes.response.isAccountExist) {
