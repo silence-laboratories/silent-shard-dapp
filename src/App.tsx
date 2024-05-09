@@ -331,8 +331,8 @@ const App = () => {
     if (await isConnected(provider)) {
       await handleInitPairing().then((isInitPairingDone) => {
         if (isInitPairingDone) {
-          handleRunPairing().then((isPairingDone) => {
-            setSnapVersion(provider);
+          handleRunPairing().then(async (isPairingDone) => {
+            await setSnapVersion(provider);
             if (isPairingDone) {
               handleCreateAccount();
             }
