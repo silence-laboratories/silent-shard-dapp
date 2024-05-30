@@ -153,13 +153,15 @@ const App = () => {
   };
 
   const handleRequestSnap = async () => {
+    const snapVersion = (snapMetadata?.latestSnapVersion || snapVersionFromParams) ?? '';
     try {
-      await connectSnap(snapMetadata?.latestSnapVersion || snapVersionFromParams, provider);
+      await connectSnap(snapVersion, provider);
       trackAnalyticEvent(
         EventName.install_snap,
         new AnalyticEvent() //
           .setStatus(EventStatus.approved)
           .setMetamaskAddress(mmAddress)
+          .setSnapVersion(snapVersion)
       );
     } catch (error: unknown) {
       setOpenMmConnectDialog(false);
@@ -172,6 +174,7 @@ const App = () => {
               .setStatus(EventStatus.failed)
               .setMetamaskAddress(mmAddress)
               .setError(REJECTED_ERROR)
+              .setSnapVersion(snapVersion)
           );
         } else {
           handleSnapErrorTemplate(error);
@@ -183,6 +186,7 @@ const App = () => {
             .setStatus(EventStatus.failed)
             .setMetamaskAddress(mmAddress)
             .setError((error as Error).message)
+            .setSnapVersion(snapVersion)
         );
       }
     }
@@ -215,11 +219,13 @@ const App = () => {
         });
       }
       const initPairingRes = await initPairing(provider, false);
+      console.log('snapMetadata?.currentSnapVersion', snapMetadata?.currentSnapVersion);
       trackAnalyticEvent(
         EventName.approve_snap,
         new AnalyticEvent() //
           .setStatus(EventStatus.approved)
           .setMetamaskAddress(mmAddress)
+          .setSnapVersion(snapMetadata?.currentSnapVersion || '')
       );
       setAppState({
         status: AppStatus.Pairing,
@@ -237,6 +243,7 @@ const App = () => {
             new AnalyticEvent() //
               .setStatus(EventStatus.failed)
               .setMetamaskAddress(mmAddress)
+              .setSnapVersion(snapMetadata?.currentSnapVersion || '')
               .setError(REJECTED_ERROR)
           );
         } else {
@@ -248,6 +255,7 @@ const App = () => {
           new AnalyticEvent() //
             .setStatus(EventStatus.failed)
             .setMetamaskAddress(mmAddress)
+            .setSnapVersion(snapMetadata?.currentSnapVersion || '')
             .setError((error as Error).message)
         );
       }
@@ -803,6 +811,7 @@ const App = () => {
               case AppStatus.Unpaired:
                 return (
                   <Installation
+                    currentSnapVersion={snapMetadata?.currentSnapVersion || ''}
                     onConnectMmClick={async () => {
                       setOpenMmConnectDialog(true);
                       await handleConnectMmClick();

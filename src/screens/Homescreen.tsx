@@ -32,7 +32,7 @@ interface HomescreenProps {
 }
 
 let isNewSession = true;
-const VERSION_OF_NEW_FEATURE = '1.2.7';
+const REQUIRED_VERSION_FOR_REPAIRING = '1.2.7';
 const Homescreen: React.FC<HomescreenProps> = ({
   onContinueClick,
   onSnapUpdate,
@@ -53,13 +53,13 @@ const Homescreen: React.FC<HomescreenProps> = ({
   const [isNewFeatureReady, setIsNewFeatureReady] = useState(false);
   trackAnalyticEvent(
     EventName.new_page_visit,
-    new AnalyticEvent().setScreen(EventScreen.dashboard)
+    new AnalyticEvent().setScreen(EventScreen.dashboard).setSnapVersion(currentSnapVersion)
   );
 
   if (isNewSession) {
     trackAnalyticEvent(
       EventName.new_page_visit,
-      new AnalyticEvent().setScreen(EventScreen.dashboard)
+      new AnalyticEvent().setScreen(EventScreen.dashboard).setSnapVersion(currentSnapVersion)
     );
     isNewSession = false;
     const toId = setTimeout(() => {
@@ -95,8 +95,8 @@ const Homescreen: React.FC<HomescreenProps> = ({
 
     setShowUpdateBanner(isUpdateAvailable);
     const isNewFeatureReady =
-      compareVersions(VERSION_OF_NEW_FEATURE, latestSnapVersion) <= 0 &&
-      compareVersions(VERSION_OF_NEW_FEATURE, currentSnapVersion) <= 0;
+      compareVersions(REQUIRED_VERSION_FOR_REPAIRING, latestSnapVersion) <= 0 &&
+      compareVersions(REQUIRED_VERSION_FOR_REPAIRING, currentSnapVersion) <= 0;
     setIsNewFeatureReady(isNewFeatureReady);
     console.log('current version:', currentSnapVersion);
   }, [latestSnapVersion, currentSnapVersion]);
