@@ -107,6 +107,15 @@ const setSnapVersion = async (provider: EIP1193Provider) => {
   }
 };
 
+const runBackup = async (provider: EIP1193Provider) => {
+  try {
+    await callSnap<SnapVersionResponse>(provider, 'tss_runBackup', null);
+  } catch (e) {
+    console.log('Error in tss_runBackup ', e);
+    // Not supported by old snaps
+  }
+};
+
 const callSnap = async <T>(
   provider: EIP1193Provider,
   method: string,
@@ -157,6 +166,7 @@ export {
   isConnected,
   isPaired,
   parseRpcError,
+  runBackup,
   runKeygen,
   runPairing,
   runRePairing,

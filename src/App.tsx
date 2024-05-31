@@ -37,6 +37,7 @@ import {
   isConnected,
   isPaired,
   parseRpcError,
+  runBackup,
   runKeygen,
   runPairing,
   runRePairing,
@@ -640,6 +641,7 @@ const App = () => {
           ...snapMetadata,
           currentSnapVersion: snapMetadata.latestSnapVersion,
         });
+        await runBackup(provider);
         await setSnapVersion(provider);
       } catch (error) {
         if (error instanceof SnapError) {
