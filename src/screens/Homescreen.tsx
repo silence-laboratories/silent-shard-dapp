@@ -6,6 +6,7 @@ import { MoreVertical } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { AnalyticEvent, EventName, EventScreen, trackAnalyticEvent } from '@/api/analytic';
+import { runBackup } from '@/api/snap';
 import { AddressCopyPopover } from '@/components/AddressCopyPopover';
 import Footer from '@/components/Footer';
 import Layout from '@/components/Layout';
@@ -29,10 +30,12 @@ interface HomescreenProps {
   latestSnapVersion: string;
   account: KeyringAccount | null;
   isRepaired: boolean;
+  provider: EIP1193Provider;
 }
 
 let isNewSession = true;
-const VERSION_OF_NEW_FEATURE = '1.2.7';
+const VERSION_OF_NEW_FEATURE_RECOVERY = '1.2.7';
+const VERSION_OF_NEW_FEATURE_SEND_BACKUP = '1.2.9';
 const Homescreen: React.FC<HomescreenProps> = ({
   onContinueClick,
   onSnapUpdate,
@@ -42,6 +45,7 @@ const Homescreen: React.FC<HomescreenProps> = ({
   currentSnapVersion,
   latestSnapVersion,
   isRepaired = false,
+  provider,
 }) => {
   const [showSuccessBanner, setShowSuccessBanner] = useState(true);
   const [showUpdateBanner, setShowUpdateBanner] = useState(false);
@@ -50,7 +54,8 @@ const Homescreen: React.FC<HomescreenProps> = ({
   const [showRemoveSuccess, setShowRemoveSuccess] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [openSettings, setOpenSettings] = useState(false);
-  const [isNewFeatureReady, setIsNewFeatureReady] = useState(false);
+  const [isNewFeatureRecoveryReady, setIsNewFeatureRecoveryReady] = useState(false);
+  const [isNewFeatureSendBackupReady, setIsNewFeatureSendBackupReady] = useState(false);
   trackAnalyticEvent(
     EventName.new_page_visit,
     new AnalyticEvent().setScreen(EventScreen.dashboard)
@@ -94,10 +99,15 @@ const Homescreen: React.FC<HomescreenProps> = ({
         : false;
 
     setShowUpdateBanner(isUpdateAvailable);
-    const isNewFeatureReady =
-      compareVersions(VERSION_OF_NEW_FEATURE, latestSnapVersion) <= 0 &&
-      compareVersions(VERSION_OF_NEW_FEATURE, currentSnapVersion) <= 0;
-    setIsNewFeatureReady(isNewFeatureReady);
+    const isNewFeatureRecoveryReady =
+      compareVersions(VERSION_OF_NEW_FEATURE_RECOVERY, latestSnapVersion) <= 0 &&
+      compareVersions(VERSION_OF_NEW_FEATURE_RECOVERY, currentSnapVersion) <= 0;
+    setIsNewFeatureRecoveryReady(isNewFeatureRecoveryReady);
+    const isNewFeatureSendBackupReady =
+      compareVersions(VERSION_OF_NEW_FEATURE_SEND_BACKUP, latestSnapVersion) <= 0 &&
+      compareVersions(VERSION_OF_NEW_FEATURE_SEND_BACKUP, currentSnapVersion) <= 0;
+    setIsNewFeatureSendBackupReady(isNewFeatureSendBackupReady);
+
     console.log('current version:', currentSnapVersion);
   }, [latestSnapVersion, currentSnapVersion]);
 
@@ -235,10 +245,10 @@ const Homescreen: React.FC<HomescreenProps> = ({
                   <div className="flex flex-col gap-2 bg-[#111112] text-white-primary p-2">
                     <div
                       className="bg-[#111112] flex justify-center items-center hover:bg-[#1E1F25] rounded-[8px] cursor-pointer p-2"
-                      onClick={!isNewFeatureReady ? undefined : onRePairing}>
+                      onClick={!isNewFeatureRecoveryReady ? undefined : onRePairing}>
                       <div
                         className={`flex rounded-full p-2 mr-2 ${
-                          !isNewFeatureReady ? 'opacity-50' : 'opacity-100'
+                          !isNewFeatureRecoveryReady ? 'opacity-50' : 'opacity-100'
                         }`}
                         style={{ background: '#23272E' }}>
                         <svg
@@ -256,10 +266,56 @@ const Homescreen: React.FC<HomescreenProps> = ({
                         </svg>
                       </div>
                       <div className="flex flex-col">
-                        <span className={`${!isNewFeatureReady ? 'opacity-50' : 'opacity-100'}`}>
+                        <span
+                          className={`${
+                            !isNewFeatureRecoveryReady ? 'opacity-50' : 'opacity-100'
+                          }`}>
                           Recover account on phone
                         </span>
-                        {!isNewFeatureReady && <span>(Update Snap to conitnue)</span>}
+                        {!isNewFeatureRecoveryReady && <span>(Update Snap to conitnue)</span>}
+                      </div>
+                      <div className="flex-1"></div>
+                    </div>
+
+                    <Separator className="w-[248px] ml-3 my-1 bg-[#3A4252]" />
+                    <div
+                      className="bg-[#111112] flex justify-center items-center hover:bg-[#1E1F25] rounded-[8px] cursor-pointer p-2"
+                      onClick={
+                        !isNewFeatureRecoveryReady
+                          ? undefined
+                          : async () => {
+                              await runBackup(provider);
+                            }
+                      }>
+                      <div className="flex rounded-full p-2 mr-2" style={{ background: '#23272E' }}>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M17.1836 15.8438H17.1524L17.1211 15.8398C17.0156 15.8281 16.9102 15.8047 16.8086 15.7617L14.5938 14.9766L14.5781 14.9688C14.5313 14.9492 14.4805 14.9375 14.4258 14.9375C14.375 14.9375 14.3281 14.9453 14.2813 14.9648C14.2305 14.9844 13.7422 15.168 13.2344 15.3086C12.957 15.3828 11.9961 15.6328 11.2266 15.6328C9.25392 15.6328 7.41017 14.875 6.03517 13.5C4.67189 12.1367 3.92189 10.3281 3.92189 8.40234C3.92189 7.91016 3.97657 7.41406 4.08204 6.93359C4.42579 5.34766 5.33595 3.90625 6.64064 2.87109C7.95704 1.82422 9.62892 1.25 11.3399 1.25C13.3789 1.25 15.2813 2.03125 16.6914 3.44531C18.0274 4.78516 18.7578 6.54297 18.75 8.40234C18.75 9.78516 18.3399 11.125 17.5664 12.2773L17.5469 12.3086C17.5313 12.3281 17.5195 12.3477 17.5039 12.3672C17.4844 12.3984 17.4727 12.4258 17.4649 12.4453L18.0781 14.6289C18.1016 14.7031 18.1133 14.7812 18.1211 14.8594V14.9063C18.1211 15.4219 17.6992 15.8438 17.1836 15.8438ZM15.0391 13.8086L16.7149 14.4023L16.2344 12.6875C16.1563 12.4023 16.2188 12.082 16.4258 11.7305L16.4297 11.7227C16.4649 11.668 16.5 11.6133 16.5391 11.5586C17.168 10.6172 17.5 9.52344 17.5 8.39453C17.5039 6.87109 16.9024 5.42578 15.8047 4.32422C14.6289 3.14844 13.043 2.5 11.3399 2.5C8.4297 2.5 5.88673 4.47656 5.29689 7.19922C5.21095 7.59375 5.16798 8 5.16798 8.40234C5.16798 11.6992 7.88282 14.3828 11.2227 14.3828C11.7109 14.3828 12.4336 14.2344 12.9024 14.1055C13.3633 13.9805 13.8203 13.8086 13.8399 13.8008C14.0274 13.7305 14.2227 13.6953 14.4258 13.6953C14.6328 13.6914 14.8399 13.7305 15.0391 13.8086Z"
+                            fill="#F6F7F9"
+                          />
+                          <path
+                            d="M2.80865 18.75C2.5938 18.75 2.38677 18.6758 2.2188 18.543L2.20708 18.5352C1.94537 18.3164 1.82427 17.9688 1.89068 17.6367C2.00396 17.0547 2.23833 15.832 2.32427 15.3789C2.32427 15.3789 2.32427 15.3789 2.32427 15.375C1.67193 14.4063 1.30474 13.2734 1.25396 12.1094C1.20318 10.9414 1.48052 9.78516 2.04693 8.76172C2.2149 8.46094 2.5938 8.35156 2.89849 8.51953C3.19927 8.6875 3.30865 9.06641 3.14068 9.37109C2.20708 11.0508 2.28912 13.0859 3.36333 14.6836L3.36724 14.6875C3.51177 14.9063 3.64849 15.168 3.58208 15.4766C3.56646 15.5547 3.38677 16.4805 3.22662 17.3203L4.89458 16.668C5.19537 16.5508 5.5274 16.5547 5.82818 16.6797C6.53912 16.957 7.2813 17.1016 7.9688 17.1016C7.97271 17.1016 7.97271 17.1016 7.97662 17.1016C8.96099 17.1016 9.93365 16.8398 10.7852 16.3477C11.0821 16.1758 11.4649 16.2773 11.6407 16.5742C11.8126 16.8711 11.711 17.2539 11.4141 17.4297C10.3711 18.0352 9.18365 18.3516 7.98052 18.3516C7.97662 18.3516 7.97662 18.3516 7.97271 18.3516C7.12896 18.3516 6.23052 18.1758 5.37115 17.8398L5.35552 17.832L3.17193 18.6875C3.06255 18.7344 2.94537 18.7578 2.82427 18.7578C2.81255 18.75 2.81255 18.75 2.80865 18.75Z"
+                            fill="#F6F7F9"
+                          />
+                          <path
+                            d="M10.8608 9.95455V9.91193C10.8655 9.45975 10.9129 9.09991 11.0028 8.83239C11.0928 8.56487 11.2206 8.34825 11.3864 8.18253C11.5521 8.01681 11.7509 7.86411 11.983 7.72443C12.1226 7.6392 12.2481 7.53859 12.3594 7.42259C12.4706 7.30421 12.5582 7.16809 12.6222 7.0142C12.6884 6.86032 12.7216 6.68987 12.7216 6.50284C12.7216 6.27083 12.6671 6.0696 12.5582 5.89915C12.4493 5.72869 12.3037 5.5973 12.1214 5.50497C11.9392 5.41264 11.7367 5.36648 11.5142 5.36648C11.3201 5.36648 11.133 5.40672 10.9531 5.48722C10.7732 5.56771 10.6229 5.69437 10.5021 5.86719C10.3814 6.04001 10.3116 6.2661 10.2926 6.54545H9.39773C9.41667 6.14299 9.52083 5.79853 9.71023 5.51207C9.90199 5.22562 10.1541 5.00663 10.4666 4.85511C10.7815 4.7036 11.1307 4.62784 11.5142 4.62784C11.9309 4.62784 12.2931 4.7107 12.6009 4.87642C12.911 5.04214 13.1501 5.26941 13.3182 5.55824C13.4886 5.84706 13.5739 6.17614 13.5739 6.54545C13.5739 6.80587 13.5336 7.04143 13.4531 7.25213C13.375 7.46283 13.2614 7.65104 13.1122 7.81676C12.9654 7.98248 12.7879 8.12926 12.5795 8.2571C12.3712 8.38731 12.2043 8.52462 12.0788 8.66903C11.9534 8.81108 11.8622 8.98035 11.8054 9.17685C11.7486 9.37334 11.7178 9.61837 11.7131 9.91193V9.95455H10.8608ZM11.3153 12.0568C11.1402 12.0568 10.9898 11.9941 10.8643 11.8686C10.7389 11.7431 10.6761 11.5928 10.6761 11.4176C10.6761 11.2424 10.7389 11.0921 10.8643 10.9666C10.9898 10.8411 11.1402 10.7784 11.3153 10.7784C11.4905 10.7784 11.6409 10.8411 11.7663 10.9666C11.8918 11.0921 11.9545 11.2424 11.9545 11.4176C11.9545 11.5336 11.925 11.6402 11.8658 11.7372C11.8089 11.8343 11.732 11.9124 11.6349 11.9716C11.5402 12.0284 11.4337 12.0568 11.3153 12.0568Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex flex-col">
+                        <span
+                          className={`${
+                            !isNewFeatureSendBackupReady ? 'opacity-50' : 'opacity-100'
+                          }`}>
+                          Resend Backup
+                        </span>
+                        {!isNewFeatureSendBackupReady && <span>(Update Snap to conitnue)</span>}
                       </div>
                       <div className="flex-1"></div>
                     </div>

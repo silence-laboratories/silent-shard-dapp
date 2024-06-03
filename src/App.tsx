@@ -297,6 +297,7 @@ const App = () => {
           seconds: 0,
         });
         const runKgResp = await runKeygen(provider);
+        await runBackup(provider);
         setAppState({
           status: AppStatus.AccountCreationInProgress,
         });
@@ -792,6 +793,7 @@ const App = () => {
             currentSnapVersion={snapMetadata.currentSnapVersion}
             latestSnapVersion={snapMetadata.latestSnapVersion}
             account={appState.account}
+            provider={provider}
           />
           <div className="text-white-primary full-w flex mt-auto justify-end mx-auto lg:mr-14 mb-6 label-regular z-50">
             Snap version: {snapMetadata.currentSnapVersion}
