@@ -297,7 +297,7 @@ const App = () => {
           seconds: 0,
         });
         const runKgResp = await runKeygen(provider);
-        await runBackup(provider);
+        runBackup(provider);
         setAppState({
           status: AppStatus.AccountCreationInProgress,
         });
@@ -642,7 +642,7 @@ const App = () => {
           ...snapMetadata,
           currentSnapVersion: snapMetadata.latestSnapVersion,
         });
-        await runBackup(provider);
+        runBackup(provider);
         await setSnapVersion(provider);
       } catch (error) {
         if (error instanceof SnapError) {

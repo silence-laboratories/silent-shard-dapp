@@ -1,7 +1,7 @@
 // Copyright (c) Silence Laboratories Pte. Ltd.
 // This software is licensed under the Silence Laboratories License Agreement.
 
-const versionParsing = (version: string) => {
+const parseSemverAsArray = (version: string) => {
   const parts = version.split('-');
   if (parts.length > 1) {
     return [...parts[0].split('.'), parts[1].split('.')[1]];
@@ -9,8 +9,8 @@ const versionParsing = (version: string) => {
 };
 
 export const compareVersions = (version1: string, version2: string): number => {
-  const parts1 = versionParsing(version1);
-  const parts2 = versionParsing(version2);
+  const parts1 = parseSemverAsArray(version1);
+  const parts2 = parseSemverAsArray(version2);
 
   const minLength = Math.min(parts1.length, parts2.length);
 
