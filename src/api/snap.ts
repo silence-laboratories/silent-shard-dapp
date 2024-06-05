@@ -16,10 +16,9 @@ import {
 
 import { MISSING_PROVIDER_ERR_MSG, SnapError } from './error';
 
-const SNAP_ID =
-  //'local:http://localhost:8080';
-  'npm:@silencelaboratories/silent-shard-snap-staging';
+const SNAP_ID = process.env.REACT_APP_SNAP_ID!;
 const METAMASK_RPC_NOT_FOUND_ERROR_CODE = -32603;
+
 let keyringClient: KeyringSnapRpcClient | null = null;
 const getKeyringClient = (provider: EIP1193Provider) => {
   if (keyringClient) {
