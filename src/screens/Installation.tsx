@@ -12,14 +12,15 @@ import { Button } from '@/components/ui/button';
 
 interface InstallationProps {
   onConnectMmClick: () => Promise<void>;
+  currentSnapVersion: string;
 }
 let isNewSession = true;
-const Installation: React.FC<InstallationProps> = ({ onConnectMmClick }) => {
+const Installation: React.FC<InstallationProps> = ({ onConnectMmClick, currentSnapVersion }) => {
   const [showSpinner, setShowSpinner] = useState(false);
   if (isNewSession) {
     trackAnalyticEvent(
       EventName.new_page_visit,
-      new AnalyticEvent().setScreen(EventScreen.connect_metamask)
+      new AnalyticEvent().setScreen(EventScreen.connect_metamask).setSnapVersion(currentSnapVersion)
     );
     isNewSession = false;
     const toId = setTimeout(() => {

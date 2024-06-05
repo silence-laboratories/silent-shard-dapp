@@ -64,6 +64,7 @@ export class AnalyticEvent {
   wallet?: string;
   success?: boolean;
   page?: EventPage;
+  snapVersion?: string;
 
   constructor() {
     this.device = 'web';
@@ -116,6 +117,11 @@ export class AnalyticEvent {
 
   setPage(page: EventPage) {
     this.page = page;
+    return this;
+  }
+
+  setSnapVersion(snapVersion: string) {
+    this.snapVersion = snapVersion;
     return this;
   }
 

@@ -60,13 +60,13 @@ const Homescreen: React.FC<HomescreenProps> = ({
   const [showEnryptedBackupSentDailog, setShowEnryptedBackupSentDailog] = useState(false);
   trackAnalyticEvent(
     EventName.new_page_visit,
-    new AnalyticEvent().setScreen(EventScreen.dashboard)
+    new AnalyticEvent().setScreen(EventScreen.dashboard).setSnapVersion(currentSnapVersion)
   );
 
   if (isNewSession) {
     trackAnalyticEvent(
       EventName.new_page_visit,
-      new AnalyticEvent().setScreen(EventScreen.dashboard)
+      new AnalyticEvent().setScreen(EventScreen.dashboard).setSnapVersion(currentSnapVersion)
     );
     isNewSession = false;
     const toId = setTimeout(() => {
