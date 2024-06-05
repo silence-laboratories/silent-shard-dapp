@@ -17,6 +17,8 @@ import {
 import { MISSING_PROVIDER_ERR_MSG, SnapError } from './error';
 
 const SNAP_ID = process.env.REACT_APP_SNAP_ID!;
+const METAMASK_RPC_NOT_FOUND_ERROR_CODE = -32603;
+
 let keyringClient: KeyringSnapRpcClient | null = null;
 const getKeyringClient = (provider: EIP1193Provider) => {
   if (keyringClient) {
@@ -108,6 +110,22 @@ const setSnapVersion = async (provider: EIP1193Provider) => {
   }
 };
 
+const runBackup = async (provider: EIP1193Provider) => {
+  try {
+    await callSnap<SnapVersionResponse>(provider, 'tss_runBackup', null);
+  } catch (e) {
+    const snapError = e as SnapError;
+    if (snapError.code != METAMASK_RPC_NOT_FOUND_ERROR_CODE) {
+      throw snapError;
+    } else {
+      // Not supported by old snaps
+      console.warn(
+        'Warning: tss_runBackup not available on this snap version, update the snap to remove this warning'
+      );
+    }
+  }
+};
+
 const callSnap = async <T>(
   provider: EIP1193Provider,
   method: string,
@@ -158,6 +176,7 @@ export {
   isConnected,
   isPaired,
   parseRpcError,
+  runBackup,
   runKeygen,
   runPairing,
   runRePairing,

@@ -37,6 +37,7 @@ import {
   isConnected,
   isPaired,
   parseRpcError,
+  runBackup,
   runKeygen,
   runPairing,
   runRePairing,
@@ -304,6 +305,7 @@ const App = () => {
           seconds: 0,
         });
         const runKgResp = await runKeygen(provider);
+        runBackup(provider);
         setAppState({
           status: AppStatus.AccountCreationInProgress,
         });
@@ -648,6 +650,7 @@ const App = () => {
           ...snapMetadata,
           currentSnapVersion: snapMetadata.latestSnapVersion,
         });
+        runBackup(provider);
         await setSnapVersion(provider);
       } catch (error) {
         if (error instanceof SnapError) {
@@ -798,6 +801,7 @@ const App = () => {
             currentSnapVersion={snapMetadata.currentSnapVersion}
             latestSnapVersion={snapMetadata.latestSnapVersion}
             account={appState.account}
+            provider={provider}
           />
           <div className="text-white-primary full-w flex mt-auto justify-end mx-auto lg:mr-14 mb-6 label-regular z-50">
             Snap version: {snapMetadata.currentSnapVersion}
