@@ -23,6 +23,7 @@ export enum EventName {
   recover_on_phone = 'recover_on_phone',
   re_pairing_device = 're_pairing_device',
   unexpected_error = 'unexpected_error',
+  send_backup_to_app = 'send_backup_to_app',
 }
 
 export const REJECTED_ERROR = 'rejected_on_metamask';
@@ -30,6 +31,7 @@ export const REJECTED_ERROR = 'rejected_on_metamask';
 export enum EventScreen {
   connect_metamask = 'connect_metamask',
   dashboard = 'dashboard',
+  sending_backup_to_phone = 'sending_backup_to_phone',
 }
 
 export enum EventType {
