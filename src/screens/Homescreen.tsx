@@ -287,8 +287,25 @@ const Homescreen: React.FC<HomescreenProps> = ({
                           !isNewFeatureSendBackupReady
                             ? undefined
                             : async () => {
-                                await runBackup(provider);
-                                setShowEnryptedBackupSentDailog(true);
+                                try {
+                                  await runBackup(provider);
+                                  setShowEnryptedBackupSentDailog(true);
+                                  trackAnalyticEvent(
+                                    EventName.send_backup_to_app,
+                                    new AnalyticEvent()
+                                      .setScreen(EventScreen.sending_backup_to_phone)
+                                      .setSuccess(true)
+                                  );
+                                } catch (error) {
+                                  trackAnalyticEvent(
+                                    EventName.send_backup_to_app,
+                                    new AnalyticEvent()
+                                      .setScreen(EventScreen.sending_backup_to_phone)
+                                      .setSuccess(false)
+                                      .setSnapVersion(currentSnapVersion)
+                                      .setError(`${error}`)
+                                  );
+                                }
                               }
                         }>
                         <div
