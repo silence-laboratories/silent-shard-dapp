@@ -40,12 +40,11 @@ const connectSnap = async (snapVersion: string | null, provider: EIP1193Provider
     return await provider.request({
       method: 'wallet_requestSnaps',
       params: {
-        [SNAP_ID]: {},
-        // snapVersion
-        //   ? {
-        //       version: snapVersion,
-        //     }
-        //   : {},
+        [SNAP_ID]: snapVersion
+          ? {
+              version: snapVersion,
+            }
+          : {},
       } as any,
     });
   } catch (error) {
