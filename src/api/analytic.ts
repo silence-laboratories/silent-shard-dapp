@@ -39,6 +39,9 @@ export enum EventType {
   recovered = 'recovered',
   same_account = 'same_account',
   different_account = 'different_account',
+  onboarding = 'onboarding',
+  automatic = 'automatic',
+  user_click = 'user_click',
 }
 
 export enum EventStatus {
@@ -54,6 +57,11 @@ export enum EventPage {
   silence_laboratories = 'silence_laboratories',
 }
 
+export enum EventVerificationType {
+  success = 'success',
+  fail = 'fail',
+}
+
 export class AnalyticEvent {
   device: string;
   error?: string;
@@ -67,6 +75,7 @@ export class AnalyticEvent {
   success?: boolean;
   page?: EventPage;
   snapVersion?: string;
+  verification?: string;
 
   constructor() {
     this.device = 'web';
@@ -124,6 +133,11 @@ export class AnalyticEvent {
 
   setSnapVersion(snapVersion: string) {
     this.snapVersion = snapVersion;
+    return this;
+  }
+
+  setVerification(verification: string) {
+    this.verification = verification;
     return this;
   }
 

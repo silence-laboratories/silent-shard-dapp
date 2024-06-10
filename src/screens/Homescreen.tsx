@@ -5,7 +5,14 @@ import { KeyringAccount } from '@metamask/keyring-api';
 import { MoreVertical } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { AnalyticEvent, EventName, EventScreen, trackAnalyticEvent } from '@/api/analytic';
+import {
+  AnalyticEvent,
+  EventName,
+  EventScreen,
+  EventType,
+  EventVerificationType,
+  trackAnalyticEvent,
+} from '@/api/analytic';
 import { runBackup } from '@/api/snap';
 import { AddressCopyPopover } from '@/components/AddressCopyPopover';
 import Footer from '@/components/Footer';
@@ -293,16 +300,15 @@ const Homescreen: React.FC<HomescreenProps> = ({
                                   trackAnalyticEvent(
                                     EventName.send_backup_to_app,
                                     new AnalyticEvent()
-                                      .setScreen(EventScreen.sending_backup_to_phone)
-                                      .setSuccess(true)
+                                      .setVerification(EventVerificationType.success)
+                                      .setType(EventType.user_click)
                                   );
                                 } catch (error) {
                                   trackAnalyticEvent(
                                     EventName.send_backup_to_app,
                                     new AnalyticEvent()
-                                      .setScreen(EventScreen.sending_backup_to_phone)
-                                      .setSuccess(false)
-                                      .setSnapVersion(currentSnapVersion)
+                                      .setVerification(EventVerificationType.fail)
+                                      .setType(EventType.user_click)
                                       .setError(`${error}`)
                                   );
                                 }
