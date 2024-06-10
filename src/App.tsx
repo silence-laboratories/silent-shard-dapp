@@ -15,6 +15,7 @@ import {
   EventName,
   EventStatus,
   EventType,
+  EventVerificationType,
   REJECTED_ERROR,
   trackAnalyticEvent,
 } from './api/analytic';
@@ -305,7 +306,24 @@ const App = () => {
           seconds: 0,
         });
         const runKgResp = await runKeygen(provider);
-        runBackup(provider);
+        runBackup(provider)
+          .then(() => {
+            trackAnalyticEvent(
+              EventName.send_backup_to_app,
+              new AnalyticEvent()
+                .setVerification(EventVerificationType.success)
+                .setType(EventType.onboarding)
+            );
+          })
+          .catch((error) => {
+            trackAnalyticEvent(
+              EventName.send_backup_to_app,
+              new AnalyticEvent()
+                .setVerification(EventVerificationType.fail)
+                .setType(EventType.onboarding)
+                .setError(`${error}`)
+            );
+          });
         setAppState({
           status: AppStatus.AccountCreationInProgress,
         });
@@ -650,7 +668,24 @@ const App = () => {
           ...snapMetadata,
           currentSnapVersion: snapMetadata.latestSnapVersion,
         });
-        runBackup(provider);
+        runBackup(provider)
+          .then(() => {
+            trackAnalyticEvent(
+              EventName.send_backup_to_app,
+              new AnalyticEvent()
+                .setVerification(EventVerificationType.success)
+                .setType(EventType.automatic)
+            );
+          })
+          .catch((error) => {
+            trackAnalyticEvent(
+              EventName.send_backup_to_app,
+              new AnalyticEvent()
+                .setVerification(EventVerificationType.fail)
+                .setType(EventType.automatic)
+                .setError(`${error}`)
+            );
+          });
         await setSnapVersion(provider);
       } catch (error) {
         if (error instanceof SnapError) {
