@@ -151,7 +151,7 @@ const Pairing: React.FC<PairingProps> = ({
                 </div>
               )}
               <div
-                className={`b2-regular flex flex-col space-y-2 text-[#B6BAC3] mt-4 ${
+                className={`b2-regular flex flex-col space-y-4 text-[#B6BAC3] mt-4 ${
                   isQrExpired ? 'opacity-30' : ''
                 }`}>
                 <div>
@@ -178,7 +178,7 @@ const Pairing: React.FC<PairingProps> = ({
                           />
                         </svg>
                       }>
-                      Sign in to your{' '}
+                      Open your{' '}
                       <img
                         className="mx-2"
                         src="/v2/sl-logo.png"
@@ -187,10 +187,11 @@ const Pairing: React.FC<PairingProps> = ({
                       />
                       <span className="mr-1 text-white-primary b2-bold">Silent Shard</span>
                       <span> app and click on&nbsp;</span>
-                      <div className="text-white-primary b2-bold">“Restore&nbsp;</div>
+                      <span className="text-white-primary b2-bold">“Restore&nbsp;</span>
                       <span className="text-white-primary b2-bold">existing&nbsp;</span>
-                      <span className="text-white-primary b2-bold">account”</span>
+                      <span className="text-white-primary b2-bold">account”.</span>
                     </InstructionLine>
+                    <AddWalletInstructionLine />
                     <InstructionLine
                       icon={
                         <svg
@@ -207,11 +208,11 @@ const Pairing: React.FC<PairingProps> = ({
                           />
                         </svg>
                       }>
-                      Choose&nbsp;
+                      <span>Choose&nbsp;</span>
                       <span className="text-white-primary b2-bold">Google Password Manager</span>
-                      (Android) /{' '}
-                      <span className="text-white-primary b2-bold">iCloud Keychain</span>(iOS) or
-                      previously Backed-up file to restore.
+                      <span>(Android) /&nbsp;</span>
+                      <span className="text-white-primary b2-bold">iCloud Keychain</span>
+                      <span>(iOS) or previously Backed-up file to restore.</span>
                     </InstructionLine>
                     <InstructionLine
                       icon={
@@ -251,48 +252,32 @@ const Pairing: React.FC<PairingProps> = ({
                           />
                         </svg>
                       }>
-                      Install{' '}
+                      <span>Install </span>
                       <img
                         className="mx-2"
                         src="/v2/sl-logo.png"
                         alt="sllogosm"
                         style={{ height: 20, width: 20, borderRadius: 4 }}
                       />
-                      <span className="mr-1 text-white-primary b2-bold">Silent Shard</span> app from
+                      <span className="mr-1 text-white-primary b2-bold">Silent Shard</span>
+                      <span> app from</span>
                       <a
-                        className="underline mx-1 text-indigo-custom"
+                        className="underline mx-1 text-indigo-custom b2-bold"
                         href="https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard"
                         target="_blank"
                         rel="noreferrer">
                         Play Store
                       </a>{' '}
-                      or{' '}
+                      <span>or </span>
                       <a
-                        className="underline mx-1 text-indigo-custom"
+                        className="underline mx-1 text-indigo-custom b2-bold"
                         href="https://apps.apple.com/in/app/silent-shard/id6468993285"
                         target="_blank"
                         rel="noreferrer">
                         App Store.
                       </a>
                     </InstructionLine>
-                    <InstructionLine
-                      icon={
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none">
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M9.0625 4.375C8.81386 4.375 8.5754 4.47377 8.39959 4.64959C8.22377 4.8254 8.125 5.06386 8.125 5.3125V6.875C8.125 7.22018 7.84518 7.5 7.5 7.5C7.15482 7.5 6.875 7.22018 6.875 6.875V5.3125C6.875 4.73234 7.10547 4.17594 7.5157 3.7657C7.92594 3.35547 8.48234 3.125 9.0625 3.125H15.3125C15.8927 3.125 16.4491 3.35547 16.8593 3.7657C17.2695 4.17594 17.5 4.73234 17.5 5.3125V14.6875C17.5 15.2677 17.2695 15.8241 16.8593 16.2343C16.4491 16.6445 15.8927 16.875 15.3125 16.875H9.375C8.78813 16.875 8.18633 16.6431 7.72845 16.2843C7.27296 15.9274 6.875 15.373 6.875 14.6875V13.125C6.875 12.7798 7.15482 12.5 7.5 12.5C7.84518 12.5 8.125 12.7798 8.125 13.125V14.6875C8.125 14.8649 8.2331 15.0917 8.49939 15.3004C8.76328 15.5071 9.09898 15.625 9.375 15.625H15.3125C15.5611 15.625 15.7996 15.5262 15.9754 15.3504C16.1512 15.1746 16.25 14.9361 16.25 14.6875V5.3125C16.25 5.06386 16.1512 4.8254 15.9754 4.64959C15.7996 4.47377 15.5611 4.375 15.3125 4.375H9.0625ZM10.8081 6.43306C11.0521 6.18898 11.4479 6.18898 11.6919 6.43306L14.8169 9.55806C15.061 9.80214 15.061 10.1979 14.8169 10.4419L11.6919 13.5669C11.4479 13.811 11.0521 13.811 10.8081 13.5669C10.564 13.3229 10.564 12.9271 10.8081 12.6831L12.8661 10.625H3.125C2.77982 10.625 2.5 10.3452 2.5 10C2.5 9.65482 2.77982 9.375 3.125 9.375H12.8661L10.8081 7.31694C10.564 7.07286 10.564 6.67714 10.8081 6.43306Z"
-                            fill="#F6F7F9"
-                          />
-                        </svg>
-                      }>
-                      Sign in with your Google account or Apple ID.
-                    </InstructionLine>
+                    <AddWalletInstructionLine />
                     <InstructionLine
                       icon={
                         <svg
@@ -310,11 +295,11 @@ const Pairing: React.FC<PairingProps> = ({
                         </svg>
                       }>
                       <div>
-                        Click on{' '}
-                        <span className="mx-1 text-white-primary b2-bold">
-                          Connect your account
-                        </span>{' '}
-                        and scan the QR code displayed on this screen.
+                        <span>Click on </span>
+                        <span className="text-white-primary b2-bold">
+                          Connect your account&nbsp;
+                        </span>
+                        <span>and scan the QR code displayed on this screen.</span>
                       </div>
                     </InstructionLine>
                   </>
@@ -331,14 +316,59 @@ const Pairing: React.FC<PairingProps> = ({
   );
 };
 
+const AddWalletInstructionLine = () => {
+  return (
+    <InstructionLine
+      icon={
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M11.4115 3.0355C11.708 2.97975 12.0132 2.98976 12.3055 3.06483C12.5995 3.14033 12.8732 3.27977 13.1071 3.47323C13.341 3.66668 13.5293 3.90936 13.6585 4.18397C13.7878 4.45857 13.8549 4.75832 13.855 5.06184V5.062V5.53092C14.7902 5.69845 15.5 6.51609 15.5 7.49951V13.4995C15.5 14.6041 14.6046 15.4995 13.5 15.4995H3.5C2.39543 15.4995 1.5 14.6041 1.5 13.4995V7.49951L1.5 7.4983V6.4684V6.46825C1.49975 5.98811 1.66703 5.52293 1.97299 5.15289C2.27903 4.78277 2.70463 4.53105 3.1764 4.44115C3.17955 4.44055 3.18271 4.43998 3.18588 4.43944L11.4115 3.0355ZM12.855 5.06216V5.49951H3.5C3.33061 5.49951 3.16613 5.52057 3.00905 5.56021C3.11604 5.49493 3.23451 5.44861 3.35933 5.42429L11.5841 4.02049C11.5858 4.02021 11.5874 4.01992 11.5891 4.01962C11.5906 4.01935 11.5921 4.01907 11.5936 4.01878C11.7472 3.98951 11.9054 3.9945 12.0568 4.0334C12.2082 4.07229 12.3492 4.14413 12.4697 4.24378C12.5902 4.34344 12.6872 4.46846 12.7538 4.60992C12.8204 4.75133 12.8549 4.9057 12.855 5.062V5.06216ZM2.5 13.4995L2.5 7.9995V7.49852C2.50053 6.94669 2.94804 6.49951 3.5 6.49951H13.5C14.0523 6.49951 14.5 6.94723 14.5 7.49951V13.4995C14.5 14.0518 14.0523 14.4995 13.5 14.4995H3.5C2.94772 14.4995 2.5 14.0518 2.5 13.4995ZM11.4444 11.331C11.6089 11.4409 11.8022 11.4995 12 11.4995C12.2652 11.4995 12.5196 11.3942 12.7071 11.2066C12.8946 11.0191 13 10.7647 13 10.4995C13 10.3017 12.9414 10.1084 12.8315 9.94394C12.7216 9.77949 12.5654 9.65132 12.3827 9.57563C12.2 9.49994 11.9989 9.48014 11.8049 9.51873C11.6109 9.55731 11.4327 9.65255 11.2929 9.79241C11.153 9.93226 11.0578 10.1104 11.0192 10.3044C10.9806 10.4984 11.0004 10.6995 11.0761 10.8822C11.1518 11.0649 11.28 11.2211 11.4444 11.331Z"
+            fill="#F6F7F9"
+          />
+          <rect x="11.8" y="10.8" width="7.4" height="7.4" rx="3.7" fill="#23272E" />
+          <rect
+            x="11.8"
+            y="10.8"
+            width="7.4"
+            height="7.4"
+            rx="3.7"
+            stroke="#F6F7F9"
+            strokeWidth="0.6"
+          />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M15.5 12C15.6381 12 15.75 12.1119 15.75 12.25V14.25H17.75C17.8881 14.25 18 14.3619 18 14.5C18 14.6381 17.8881 14.75 17.75 14.75H15.75V16.75C15.75 16.8881 15.6381 17 15.5 17C15.3619 17 15.25 16.8881 15.25 16.75V14.75H13.25C13.1119 14.75 13 14.6381 13 14.5C13 14.3619 13.1119 14.25 13.25 14.25H15.25V12.25C15.25 12.1119 15.3619 12 15.5 12Z"
+            fill="#F6F7F9"
+          />
+        </svg>
+      }>
+      <div>
+        <span>If you already have another wallet active on your&nbsp;</span>
+        <span className="text-white-primary b2-bold">app</span>
+        <span>, click on the </span>
+        <span className="text-white-primary b2-bold">“Add wallet”&nbsp;</span>
+        <span> button on the bottom right corner of the screen.</span>
+      </div>
+    </InstructionLine>
+  );
+};
+
 const InstructionLine: React.FC<{ icon: ReactElement; children: React.ReactNode }> = ({
   icon,
   children,
 }) => {
   return (
     <div className="flex items-center flex-wrap">
-      <Avatar className="mr-1">
-        <AvatarFallback className="bg-gray-custom">{icon}</AvatarFallback>
+      <Avatar className="mr-2">
+        <AvatarFallback className="bg-gray-custom mr-1">{icon}</AvatarFallback>
       </Avatar>
       <div className="flex items-center flex-wrap flex-1">{children}</div>
     </div>
