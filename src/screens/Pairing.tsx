@@ -180,8 +180,8 @@ const Pairing: React.FC<PairingProps> = ({
                       }>
                       Open your{' '}
                       <img
-                        className="mx-2"
-                        src="/v2/sl-logo.png"
+                        className="mx-1"
+                        src="/v2/sl_logo.png"
                         alt="sllogosm"
                         style={{ height: 20, width: 20, borderRadius: 4 }}
                       />
@@ -254,8 +254,8 @@ const Pairing: React.FC<PairingProps> = ({
                       }>
                       <span>Install </span>
                       <img
-                        className="mx-2"
-                        src="/v2/sl-logo.png"
+                        className="mx-1"
+                        src="/v2/sl_logo.png"
                         alt="sllogosm"
                         style={{ height: 20, width: 20, borderRadius: 4 }}
                       />
@@ -350,13 +350,17 @@ const AddWalletInstructionLine = () => {
           />
         </svg>
       }>
-      <div>
-        <span>If you already have another wallet active on your&nbsp;</span>
-        <span className="text-white-primary b2-bold">app</span>
-        <span>, click on the </span>
-        <span className="text-white-primary b2-bold">“Add wallet”&nbsp;</span>
-        <span> button on the bottom right corner of the screen.</span>
-      </div>
+      <span>If you already have another wallet active on your&nbsp;</span>
+      <span className="text-white-primary b2-bold">app</span>
+      <span>, click on the </span>
+      <span className="text-white-primary b2-bold">“Add wallet”</span>
+      <img
+        src="/v2/fab.png"
+        className="mx-1"
+        alt="fab"
+        style={{ height: 20, width: 20, borderRadius: 4 }}></img>
+
+      <span> button on the bottom right corner of the screen.</span>
     </InstructionLine>
   );
 };
