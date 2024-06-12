@@ -352,7 +352,7 @@ const AddWalletInstructionLine = () => {
       }>
       <span>If you already have another wallet active on your&nbsp;</span>
       <span className="text-white-primary b2-bold">app</span>
-      <span>, click on the </span>
+      <span>, click on the&nbsp;</span>
       <span className="text-white-primary b2-bold">“Add wallet”</span>
       <img
         src="/v2/fab.png"
