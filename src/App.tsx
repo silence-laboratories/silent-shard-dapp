@@ -31,6 +31,7 @@ import {
   WRONG_SECRET_KEY_ERR_MSG,
   WRONG_SECRET_KEY_TOAST_MSG,
 } from './api/error';
+import { checkTimeConsistency } from './api/fbFunctions';
 import {
   connectSnap,
   getKeyringClient,
@@ -758,10 +759,23 @@ const App = () => {
   }, [handleReset, handleSnapVersion]);
 
   useEffect(() => {
-    if (isIOS) window.location.href = 'https://apps.apple.com/in/app/silent-shard/id6468993285';
-    else if (isAndroid)
+    const checkTimeSetting = function () {
+      if (document.visibilityState === 'visible') {
+        checkTimeConsistency().then((isConsistent) => {
+          console.log(isConsistent);
+        });
+      }
+    };
+    window.onfocus = function () {
+      checkTimeSetting();
+    };
+
+    if (isIOS) {
+      window.location.href = 'https://apps.apple.com/in/app/silent-shard/id6468993285';
+    } else if (isAndroid) {
       window.location.href =
         'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard';
+    }
   }, []);
 
   useEffect(() => {
