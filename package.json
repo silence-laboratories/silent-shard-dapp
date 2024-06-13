@@ -29,6 +29,7 @@
     "debounce": "^2.0.0",
     "embla-carousel-react": "^8.0.2",
     "lottie-react": "^2.4.0",
+    "firebase": "^10.12.2",
     "lucide-react": "^0.295.0",
     "mixpanel-browser": "^2.48.1",
     "qrcode.react": "^3.1.0",
