@@ -5,6 +5,10 @@ interface Window {
   ethereum: MetaMaskInpageProvider;
 }
 
+interface WindowEventMap {
+  'eip6963:announceProvider': CustomEvent;
+}
+
 interface EIP1193Provider {
   isStatus?: boolean;
   host?: string;
@@ -19,3 +23,23 @@ interface EIP1193Provider {
   ) => void;
   request: (request: { method: string; params?: Array<unknown> }) => Promise<unknown>;
 }
+
+interface EIP6963ProviderDetail {
+  info: EIP6963ProviderInfo;
+  provider: EIP1193Provider;
+}
+
+interface EIP6963ProviderInfo {
+  walletId: string;
+  uuid: string;
+  name: string;
+  icon: string;
+  rdns: string;
+}
+
+type EIP6963AnnounceProviderEvent = {
+  detail: {
+    info: EIP6963ProviderInfo;
+    provider: EIP1193Provider;
+  };
+};

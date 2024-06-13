@@ -49,8 +49,6 @@ export interface ProviderRpcError extends Error {
   data?: unknown;
 }
 
-export type Callback = (...args: any[]) => any | Promise<any>;
-
 export interface SnapMetaData {
   currentSnapVersion: string;
   latestSnapVersion: string;

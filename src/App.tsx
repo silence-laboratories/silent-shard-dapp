@@ -5,7 +5,9 @@ import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { KeyringAccount } from '@metamask/keyring-api';
+import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useState } from 'react';
+import { isAndroid, isIOS, isMobile } from 'react-device-detect';
 import { toast, ToastContainer } from 'react-toastify';
 
 import {
@@ -13,6 +15,7 @@ import {
   EventName,
   EventStatus,
   EventType,
+  EventVerificationType,
   REJECTED_ERROR,
   trackAnalyticEvent,
 } from './api/analytic';
@@ -35,9 +38,11 @@ import {
   isConnected,
   isPaired,
   parseRpcError,
+  runBackup,
   runKeygen,
   runPairing,
   runRePairing,
+  setSnapVersion,
   snapVersion,
   unPair,
 } from './api/snap';
@@ -54,20 +59,28 @@ import Homescreen from './screens/Homescreen';
 import Installation from './screens/Installation';
 import MismatchRepairing from './screens/MismatchRepairing';
 import Pairing from './screens/Pairing';
-import { AppState, AppStatus, Callback, DeviceOS, ProviderRpcError, SnapMetaData } from './types';
+import { AppState, AppStatus, DeviceOS, ProviderRpcError, SnapMetaData } from './types';
+
+const MODE = process.env.REACT_APP_MODE!;
 
 let provider: EIP1193Provider;
 const App = () => {
-  const isMobileWidthSize = window.innerWidth < 640;
   useOfflineStatus(); // handle internet disconnection
+
+  // Only for staging, get snapVersion from url params
+  const urlSearchString = window.location.search;
+  const params = new URLSearchParams(urlSearchString);
+  const snapVersionFromParams = MODE == 'PROD' ? null : params.get('snapVersion');
 
   const [loading, setLoading] = useState(true);
   const [openInstallDialog, setOpenInstallDialog] = useState(false);
   const [openMmConnectDialog, setOpenMmConnectDialog] = useState(false);
+  const [openAppQRDialog, setOpenAppQRDialog] = useState(false);
   const [appState, setAppState] = useState<AppState>({ status: AppStatus.Unpaired });
   const [snapMetadata, setSnapMetadata] = useState<SnapMetaData | undefined>();
   const [deviceOS, setDeviceOS] = useState<DeviceOS>(DeviceOS.android);
-  const handleSnapErrorTemplate = (snapErr: SnapError, errorHandler?: Callback) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSnapErrorTemplate = (snapErr: SnapError, errorHandler?: any) => {
     const { code, message } = snapErr;
     if (code === 4100) {
       setAppState({ status: AppStatus.Unpaired });
@@ -106,7 +119,7 @@ const App = () => {
   let mmAddress = '';
   const handleMetaMaskConnect = async () => {
     try {
-      const addresses: any = await provider?.request({ method: 'eth_requestAccounts' }); // Ask MetaMask to unlock the wallet if the user locked it
+      const addresses = (await provider?.request({ method: 'eth_requestAccounts' })) as string[]; // Ask MetaMask to unlock the wallet if the user locked it
       mmAddress = addresses?.[0];
       trackAnalyticEvent(
         EventName.connect_metamask,
@@ -142,13 +155,15 @@ const App = () => {
   };
 
   const handleRequestSnap = async () => {
+    const snapVersion = (snapMetadata?.latestSnapVersion || snapVersionFromParams) ?? '';
     try {
-      await connectSnap(snapMetadata?.latestSnapVersion || null, provider);
+      await connectSnap(snapVersion, provider);
       trackAnalyticEvent(
         EventName.install_snap,
         new AnalyticEvent() //
           .setStatus(EventStatus.approved)
           .setMetamaskAddress(mmAddress)
+          .setSnapVersion(snapVersion)
       );
     } catch (error: unknown) {
       setOpenMmConnectDialog(false);
@@ -161,6 +176,7 @@ const App = () => {
               .setStatus(EventStatus.failed)
               .setMetamaskAddress(mmAddress)
               .setError(REJECTED_ERROR)
+              .setSnapVersion(snapVersion)
           );
         } else {
           handleSnapErrorTemplate(error);
@@ -172,6 +188,7 @@ const App = () => {
             .setStatus(EventStatus.failed)
             .setMetamaskAddress(mmAddress)
             .setError((error as Error).message)
+            .setSnapVersion(snapVersion)
         );
       }
     }
@@ -181,17 +198,7 @@ const App = () => {
     try {
       await handleMetaMaskConnect();
       await handleRequestSnap();
-      if (await isConnected(provider)) {
-        await handleInitPairing().then((isInitPairingDone) => {
-          if (isInitPairingDone) {
-            handleRunPairing().then((isPairingDone) => {
-              if (isPairingDone) {
-                handleCreateAccount();
-              }
-            });
-          }
-        });
-      }
+      setOpenAppQRDialog(true);
     } catch (error) {
       if (error instanceof SnapError) {
         handleSnapErrorTemplate(error);
@@ -214,11 +221,13 @@ const App = () => {
         });
       }
       const initPairingRes = await initPairing(provider, false);
+      console.log('snapMetadata?.currentSnapVersion', snapMetadata?.currentSnapVersion);
       trackAnalyticEvent(
         EventName.approve_snap,
         new AnalyticEvent() //
           .setStatus(EventStatus.approved)
           .setMetamaskAddress(mmAddress)
+          .setSnapVersion(snapMetadata?.currentSnapVersion || '')
       );
       setAppState({
         status: AppStatus.Pairing,
@@ -236,6 +245,7 @@ const App = () => {
             new AnalyticEvent() //
               .setStatus(EventStatus.failed)
               .setMetamaskAddress(mmAddress)
+              .setSnapVersion(snapMetadata?.currentSnapVersion || '')
               .setError(REJECTED_ERROR)
           );
         } else {
@@ -247,6 +257,7 @@ const App = () => {
           new AnalyticEvent() //
             .setStatus(EventStatus.failed)
             .setMetamaskAddress(mmAddress)
+            .setSnapVersion(snapMetadata?.currentSnapVersion || '')
             .setError((error as Error).message)
         );
       }
@@ -295,6 +306,24 @@ const App = () => {
           seconds: 0,
         });
         const runKgResp = await runKeygen(provider);
+        runBackup(provider)
+          .then(() => {
+            trackAnalyticEvent(
+              EventName.send_backup_to_app,
+              new AnalyticEvent()
+                .setVerification(EventVerificationType.success)
+                .setType(EventType.onboarding)
+            );
+          })
+          .catch((error) => {
+            trackAnalyticEvent(
+              EventName.send_backup_to_app,
+              new AnalyticEvent()
+                .setVerification(EventVerificationType.fail)
+                .setType(EventType.onboarding)
+                .setError(`${error}`)
+            );
+          });
         setAppState({
           status: AppStatus.AccountCreationInProgress,
         });
@@ -323,6 +352,21 @@ const App = () => {
           });
         });
       }
+    }
+  };
+
+  const handlePairing = async () => {
+    if (await isConnected(provider)) {
+      await handleInitPairing().then((isInitPairingDone) => {
+        if (isInitPairingDone) {
+          handleRunPairing().then(async (isPairingDone) => {
+            await setSnapVersion(provider);
+            if (isPairingDone) {
+              handleCreateAccount();
+            }
+          });
+        }
+      });
     }
   };
 
@@ -624,6 +668,25 @@ const App = () => {
           ...snapMetadata,
           currentSnapVersion: snapMetadata.latestSnapVersion,
         });
+        runBackup(provider)
+          .then(() => {
+            trackAnalyticEvent(
+              EventName.send_backup_to_app,
+              new AnalyticEvent()
+                .setVerification(EventVerificationType.success)
+                .setType(EventType.automatic)
+            );
+          })
+          .catch((error) => {
+            trackAnalyticEvent(
+              EventName.send_backup_to_app,
+              new AnalyticEvent()
+                .setVerification(EventVerificationType.fail)
+                .setType(EventType.automatic)
+                .setError(`${error}`)
+            );
+          });
+        await setSnapVersion(provider);
       } catch (error) {
         if (error instanceof SnapError) {
           if (error.code === 4001) {
@@ -657,6 +720,7 @@ const App = () => {
         await handleSnapVersion();
         const isPairedRes = await isPaired(provider);
         if (isPairedRes.response?.isPaired) {
+          await setSnapVersion(provider);
           const accounts = await getKeyringClient(provider).listAccounts();
           if (accounts.length === 0) {
             if (isPairedRes.response.isAccountExist) {
@@ -694,7 +758,14 @@ const App = () => {
   }, [handleReset, handleSnapVersion]);
 
   useEffect(() => {
-    const onAnnouncement = (event: any) => {
+    if (isIOS) window.location.href = 'https://apps.apple.com/in/app/silent-shard/id6468993285';
+    else if (isAndroid)
+      window.location.href =
+        'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard';
+  }, []);
+
+  useEffect(() => {
+    const onAnnouncement = (event: EIP6963AnnounceProviderEvent) => {
       const providerDetail = event.detail;
       if (
         providerDetail.info.rdns === 'io.metamask' ||
@@ -765,6 +836,7 @@ const App = () => {
             currentSnapVersion={snapMetadata.currentSnapVersion}
             latestSnapVersion={snapMetadata.latestSnapVersion}
             account={appState.account}
+            provider={provider}
           />
           <div className="text-white-primary full-w flex mt-auto justify-end mx-auto lg:mr-14 mb-6 label-regular z-50">
             Snap version: {snapMetadata.currentSnapVersion}
@@ -778,6 +850,7 @@ const App = () => {
               case AppStatus.Unpaired:
                 return (
                   <Installation
+                    currentSnapVersion={snapMetadata?.currentSnapVersion || ''}
                     onConnectMmClick={async () => {
                       setOpenMmConnectDialog(true);
                       await handleConnectMmClick();
@@ -825,15 +898,7 @@ const App = () => {
                       if (appState.status === AppStatus.RePairing) {
                         await handleRePairing();
                       } else {
-                        await handleInitPairing().then((isInitPairingDone) => {
-                          if (isInitPairingDone) {
-                            handleRunPairing().then((isPairingDone) => {
-                              if (isPairingDone) {
-                                handleCreateAccount();
-                              }
-                            });
-                          }
-                        });
+                        await handlePairing();
                       }
                     }}
                     loading={appState.status === AppStatus.Paired}
@@ -883,7 +948,7 @@ const App = () => {
         </div>
       )}
       {/* Dialogs */}
-      {!isMobileWidthSize && (
+      {!isMobile && (
         <Dialog open={openInstallDialog} onOpenChange={setOpenInstallDialog}>
           <DialogContent
             onInteractOutside={(e) => {
@@ -910,7 +975,7 @@ const App = () => {
         </Dialog>
       )}
 
-      {isMobileWidthSize && (
+      {isMobile && (
         <Dialog defaultOpen={true}>
           <DialogContent className="flex flex-col items-center justify-center py-14 px-4 bg-[#121212] border-none outline-none w-[92vw]">
             <img src="/v2/warn.png" alt="warn" style={{ width: 204, height: 133 }} />
@@ -924,6 +989,71 @@ const App = () => {
           </DialogContent>
         </Dialog>
       )}
+      <Dialog open={openAppQRDialog} onOpenChange={setOpenAppQRDialog}>
+        <DialogContent
+          className="flex flex-col items-center justify-center py-14 px-24 h-auto bg-[#121212] border-none outline-none max-w-[634px] min-w-[450px]"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}>
+          <div
+            className="mt-2 text-center text-white-primary"
+            style={{ fontSize: 24, fontWeight: 500 }}>
+            Download the Silent Shard app to make your phone the 2FA sidekick!‍
+          </div>
+          <div
+            className="mt-1 text-center text-white-primary"
+            style={{ fontSize: 14, fontWeight: 400 }}>
+            ✨ Scan the QR code with your camera or Google Lens or click on the download links below
+            to download the app ✨
+          </div>
+          <QRCodeSVG
+            fgColor="#000"
+            bgColor="#FFF"
+            size={190}
+            className="max-h-[20.85vh] max-w-max bg-white-primary rounded-[8px] py-4 aspect-square"
+            value={
+              MODE === 'PROD'
+                ? 'https://snap.silencelaboratories.com'
+                : 'https://snap-staging.silencelaboratories.com'
+            }
+          />
+          <div
+            id="top"
+            className="flex md:flex-row justify-between items-center flex-col gap-5 w-2/3 ">
+            <Button
+              className="max-sm:p-8 w-[100%] mt-2 h-[40px] text-white-primary whitespace-normal bg-transparent border text-xs gap-1 hover:bg-gray-700 font-normal"
+              onClick={async () => {
+                window.open('https://apps.apple.com/in/app/silent-shard/id6468993285', '_blank');
+              }}>
+              <img
+                src="/v2/appleLogo.png"
+                alt="mmfox"
+                style={{ width: 24, height: 24, marginBottom: 4 }}
+              />
+              App store
+            </Button>
+            <Button
+              className="max-sm:p-8 w-[100%] mt-2 h-[40px] text-white-primary whitespace-normal bg-transparent border text-xs gap-1 hover:bg-gray-700 font-normal"
+              onClick={async () => {
+                window.open(
+                  'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard',
+                  '_blank'
+                );
+              }}>
+              <img src="/v2/playLogo.png" alt="mmfox" style={{ width: 24, height: 24 }} />
+              Play store
+            </Button>
+          </div>
+          <Button
+            className="max-sm:p-8 w-2/3 mt-2 h-[48px] bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active text-white-primary btn-lg whitespace-normal "
+            onClick={async () => {
+              setOpenAppQRDialog(false);
+              await handlePairing();
+            }}>
+            Done
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={openMmConnectDialog} onOpenChange={setOpenMmConnectDialog}>
         <DialogContent

@@ -1,0 +1,50 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  build-and-deploy-prod:
+    runs-on: github-hetzner
+    env:
+      ENV_PROD: ${{ secrets.ENV_PROD }}
+      REACT_APP_MIX_PANEL_TOKEN: ${{ secrets.REACT_APP_MIX_PANEL_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build artifact
+        run: |
+          echo "${{ secrets.ENV_PROD }}" | base64 -d > .env
+          REACT_APP_MIX_PANEL_TOKEN=$REACT_APP_MIX_PANEL_TOKEN CI=false npm run build
+          7z a ./dapp-v2.7z ../silent-shard-dapp
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dapp-v2
+          path: ./dapp-v2.7z
+          
+  deploy-prod:
+    runs-on: dapp-v2-prod
+    needs: build-and-deploy-prod
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dapp-v2
+          path: ./dapp-v2
+      - name: Build artifact
+        run: |
+          mv ./dapp-v2/dapp-v2.7z /opt/app/
+          cd /opt/app/
+          [ -d "silent-shard-dapp" ] && rm -r "silent-shard-dapp" 
+          7zz x dapp-v2.7z
+          sudo systemctl restart dapp-v2.service
