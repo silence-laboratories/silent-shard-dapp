@@ -46,5 +46,5 @@ jobs:
           mv ./dapp-v2/dapp-v2.7z /opt/app/
           cd /opt/app/
           [ -d "silent-shard-dapp" ] && rm -r "silent-shard-dapp" 
-          7zz x dapp-v2.7z
+          7z x dapp-v2.7z
           sudo systemctl restart dapp-v2.service
