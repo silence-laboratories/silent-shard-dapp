@@ -11,7 +11,7 @@ jobs:
     env:
       ENV_STAGING: ${{ secrets.ENV_STAGING }}
       REACT_APP_MIX_PANEL_TOKEN: ${{ secrets.REACT_APP_MIX_PANEL_TOKEN }}
-      REACT_APP_API_KEY: ${{ secrets.REACT_APP_API_KEY }}
+      REACT_APP_API_KEY: ${{ secrets.STAGING_REACT_APP_API_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
