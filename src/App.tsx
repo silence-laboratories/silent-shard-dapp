@@ -60,6 +60,7 @@ import Homescreen from './screens/Homescreen';
 import Installation from './screens/Installation';
 import MismatchRepairing from './screens/MismatchRepairing';
 import Pairing from './screens/Pairing';
+import WrongTimezone from './screens/WrongTimezone';
 import { AppState, AppStatus, DeviceOS, ProviderRpcError, SnapMetaData } from './types';
 
 const MODE = process.env.REACT_APP_MODE!;
@@ -80,6 +81,7 @@ const App = () => {
   const [appState, setAppState] = useState<AppState>({ status: AppStatus.Unpaired });
   const [snapMetadata, setSnapMetadata] = useState<SnapMetaData | undefined>();
   const [deviceOS, setDeviceOS] = useState<DeviceOS>(DeviceOS.android);
+  const [isTimeSettingWrong, setIsTimeSettingWrong] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSnapErrorTemplate = (snapErr: SnapError, errorHandler?: any) => {
     const { code, message } = snapErr;
@@ -758,14 +760,15 @@ const App = () => {
     }
   }, [handleReset, handleSnapVersion]);
 
+  const checkTimeSetting = async () => {
+    if (document.visibilityState === 'visible') {
+      const isConsistent = await checkTimeConsistency();
+      setIsTimeSettingWrong(!isConsistent);
+    }
+  };
+
   useEffect(() => {
-    const checkTimeSetting = function () {
-      if (document.visibilityState === 'visible') {
-        checkTimeConsistency().then((isConsistent) => {
-          console.log(isConsistent);
-        });
-      }
-    };
+    checkTimeSetting();
     window.onfocus = function () {
       checkTimeSetting();
     };
@@ -835,11 +838,17 @@ const App = () => {
     <div className="app-container">
       <NavBar />
       {/* Body */}
-
-      {(appState.status === AppStatus.AccountCreated || appState.status === AppStatus.RePaired) &&
-      appState.account &&
-      snapMetadata !== undefined &&
-      provider !== undefined ? (
+      {isTimeSettingWrong ? (
+        <WrongTimezone
+          onRetryClick={() => {
+            window.location.reload();
+          }}
+        />
+      ) : (appState.status === AppStatus.AccountCreated ||
+          appState.status === AppStatus.RePaired) &&
+        appState.account &&
+        snapMetadata !== undefined &&
+        provider !== undefined ? (
         <div className="flex flex-col flex-1 bg-pattern">
           <Homescreen
             isRepaired={appState.status === AppStatus.RePaired}
