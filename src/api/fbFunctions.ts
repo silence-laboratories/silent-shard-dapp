@@ -24,7 +24,7 @@ export const checkTimeConsistency = async () => {
     const serverTimestamp = Number(result.data['timeStamp']);
 
     const difference = deviceTimestamp - serverTimestamp;
-    if (Math.abs(difference) > 5000) {
+    if (Math.abs(difference) > 3000) {
       return false;
     }
     return true;
