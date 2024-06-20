@@ -762,8 +762,13 @@ const App = () => {
 
   const checkTimeSetting = async () => {
     if (document.visibilityState === 'visible') {
-      const isConsistent = await checkTimeConsistency();
-      setIsTimeSettingWrong(!isConsistent);
+      try {
+        const isConsistent = await checkTimeConsistency();
+        setIsTimeSettingWrong(!isConsistent);
+      } catch (error) {
+        console.error('Error while checking time consistency:', error);
+        setIsTimeSettingWrong(false);
+      }
     }
   };
 
