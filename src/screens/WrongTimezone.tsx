@@ -76,23 +76,43 @@ const WrongTimezone: React.FC<WrongTimezoneProps> = ({ onRetryClick }) => {
               fill="white"
             />
           </svg>
-          <div className="text-white-primary my-6 text-center b1-md">
+          <div className="text-white-primary my-6 b1-md w-full">
             Oops! It looks like your Date & Time settings need a quick adjustment
           </div>
-          <div className="text-white-primary my-4 b2-regular text-center">
-            Please click on the below link to know how to adjust your device date & time
+          <div className="text-white-primary b2-regular w-full">
+            Please set your ‘Date and time’ to automatic to adjust it to your local timezone.
           </div>
-          <a
-            href="https://support.microsoft.com/en-us/windows/how-to-set-your-time-and-time-zone"
-            target="_blank"
-            rel="noreferrer"
-            className="text-[#867DFC] underline mb-8 b2-regular text-center">
-            https://support.microsoft.com/en-us/windows/how-to-set-your-time-and-time-zone
-          </a>
+          <div className="flex flex-col w-full my-6">
+            <div className="text-white-primary b2-regular" style={{ fontStyle: 'italic' }}>
+              Here’s some guides to help you navigate:
+            </div>
+            <ul className="ml-5 text-white-primary b2-regular" style={{ listStyleType: 'disc' }}>
+              <li>
+                <span>For Windows devices: </span>
+                <a
+                  href="https://www.wikihow.com/Set-Windows-10-to-Automatically-Update-Your-Time-Zone-Based-on-Location"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#867DFC] underline mb-8 text-center">
+                  Link
+                </a>
+              </li>
+              <li>
+                <span>For Mac devices: </span>
+                <a
+                  href="https://support.apple.com/en-in/guide/mac-help/mchlp2996/mac#:~:text=On%20your%20Mac%2C%20choose%20Apple,may%20need%20to%20scroll%20down.)&text=Turn%20on%20%E2%80%9CSet%20time%20and,automatically%20using%20your%20current%20location%E2%80%9D."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#867DFC] underline mb-8 text-center">
+                  Link
+                </a>
+              </li>
+            </ul>
+          </div>
           <Button
             className="max-sm:p-8 w-3/4 bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active self-center text-white-primary btn-lg mb-8"
             onClick={debounce(onRetryClick, 1000)}>
-            Try again
+            Reload
           </Button>
         </div>
       </Layout>
