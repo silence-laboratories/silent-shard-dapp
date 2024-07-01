@@ -315,7 +315,7 @@ const Homescreen: React.FC<HomescreenProps> = ({
                               }
                         }>
                         <div
-                          className="flex rounded-full p-2 mr-2"
+                          className="flex rounded-full p-1 mr-2"
                           style={{ background: '#23272E' }}>
                           <svg
                             width="32"
