@@ -724,9 +724,11 @@ const App = () => {
         const isPairedRes = await isPaired(provider);
         if (isPairedRes.response?.isPaired) {
           await setSnapVersion(provider);
+
           const accounts = await getKeyringClient(provider).listAccounts();
           if (accounts.length === 0) {
             if (isPairedRes.response.isAccountExist) {
+              // Distributed key is exist but no snap wallet created
               setAppState({ status: AppStatus.AccountCreationDenied });
             } else {
               handleReset();
