@@ -355,9 +355,9 @@ const AddWalletInstructionLine = () => {
       <span>, click on the&nbsp;</span>
       <span className="text-white-primary b2-bold">“Add wallet”</span>
       <img
-        src="/v2/fab.png"
+        src="/v2/FAB.png"
         className="mx-1"
-        alt="fab"
+        alt="FAB"
         style={{ height: 20, width: 20, borderRadius: 4 }}></img>
 
       <span> button on the bottom right corner of the screen.</span>
