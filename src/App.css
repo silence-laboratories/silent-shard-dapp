@@ -14,14 +14,6 @@ body {
   background-color: #000;
 }
 
-.bg-pattern {
-  background-image: url("/public/v2/pattern.png");
-  background-repeat: no-repeat;
-  background-size: 100% auto;
-  background-size: cover;
-  background-attachment: fixed;
-}
-
 .bg-pattern-2nd-layer {
   position: fixed;
   top: 0;

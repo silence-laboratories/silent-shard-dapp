@@ -856,7 +856,7 @@ const App = () => {
         appState.account &&
         snapMetadata !== undefined &&
         provider !== undefined ? (
-        <div className="flex flex-col flex-1 bg-pattern">
+        <div className="flex flex-col flex-1">
           <Homescreen
             isRepaired={appState.status === AppStatus.RePaired}
             onContinueClick={handleReset}
@@ -873,8 +873,7 @@ const App = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full relative bg-pattern" style={{ zIndex: 1 }}>
-          <img className="bg-pattern-2nd-layer -z-10" src="/v2/pattern.png" alt=""></img>
+        <div className="w-full relative" style={{ zIndex: 1 }}>
           {(() => {
             switch (appState.status) {
               case AppStatus.Unpaired:
