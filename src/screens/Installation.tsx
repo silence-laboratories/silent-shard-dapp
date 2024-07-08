@@ -1,14 +1,16 @@
 // Copyright (c) Silence Laboratories Pte. Ltd.
 // This software is licensed under the Silence Laboratories License Agreement.
 
+import Lottie from 'lottie-react';
 import { useState } from 'react';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import { AnalyticEvent, EventName, EventScreen, trackAnalyticEvent } from '@/api/analytic';
 import Footer from '@/components/Footer';
 import Layout from '@/components/Layout';
 import TermAndPolicy from '@/components/TermAndPolicy';
 import { Button } from '@/components/ui/button';
+
+import mmConnect from '../lottie/connect_mm.json';
 
 interface InstallationProps {
   onConnectMmClick: () => Promise<void>;
@@ -75,11 +77,10 @@ const Installation: React.FC<InstallationProps> = ({ onConnectMmClick, currentSn
             as shown in the video below.
           </div>
           <div className="mb-3 flex flex-col justify-center items-center flex-1">
-            <LazyLoadImage
-              wrapperProps={{ style: { display: 'contents' } }}
-              src="/v2/mmconnect.gif"
-              alt="mmconnect"
-              className="h-auto border rounded-[8px] border-gray-700"
+            <Lottie
+              className="h-auto rounded-[8px] border-gray-700 border p-1"
+              animationData={mmConnect}
+              loop={true}
             />
             <Button
               className="max-sm:p-8 w-full mt-8 h-10 bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active text-white-primary btn-lg whitespace-normal"
