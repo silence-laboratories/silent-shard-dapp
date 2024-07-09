@@ -2,6 +2,7 @@
 // This software is licensed under the Silence Laboratories License Agreement.
 
 import { KeyringAccount } from '@metamask/keyring-api';
+import Lottie from 'lottie-react';
 import { MoreVertical } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -28,6 +29,8 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { compareVersions } from '@/utils/metamask';
+
+import whatNext from '../lottie/what_next.json';
 
 interface HomescreenProps {
   onContinueClick: () => void;
@@ -486,11 +489,11 @@ const Homescreen: React.FC<HomescreenProps> = ({
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="flex flex-wrap lg:flex-nowrap mr-8">
-                      <img
-                        className="mx-2 h-[146px] w-[222px]"
-                        src="/v2/what_next.gif"
-                        alt="laptop"
+                      <Lottie
+                        className="ml-2"
                         style={{ width: '100%', height: 'auto' }}
+                        animationData={whatNext}
+                        loop={true}
                       />
                     </div>
                   </AccordionContent>

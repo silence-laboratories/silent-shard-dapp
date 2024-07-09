@@ -1,6 +1,7 @@
 // Copyright (c) Silence Laboratories Pte. Ltd.
 // This software is licensed under the Silence Laboratories License Agreement.
 
+import Lottie from 'lottie-react';
 import React, { useEffect, useState } from 'react';
 
 import Layout, { StepProps } from '@/components/Layout';
@@ -15,6 +16,9 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+
+import backupExport from '../lottie/backup_export.json';
+import backupGpm from '../lottie/backup_gpm.json';
 
 const BackupRecovery: React.FC<{
   onDone: () => void;
@@ -93,13 +97,12 @@ const StorageBackupContent: React.FC<{ deviceOS: string; isBlur: boolean }> = ({
 }) => {
   return (
     <div
-      className="relative flex p-2 w-[385px] lg:w-[24vw]"
+      className="relative flex-col sm:flex-row flex p-2 w-[200px] sm:w-[385px] lg:w-[34vw] xl:w-[432px]"
       style={{ background: '#111112', borderRadius: '8px', opacity: `${isBlur ? '0.5' : '1'}` }}>
-      <img
+      <Lottie
         className="mr-3 h-[223px] w-[104px] flex-none"
-        src="/v2/backup_gpm.gif"
-        alt="laptop"
-        style={{ height: 'auto' }}
+        animationData={backupGpm}
+        loop={true}
       />
 
       <div className="flex flex-shrink flex-col">
@@ -139,7 +142,7 @@ const StorageBackupContent: React.FC<{ deviceOS: string; isBlur: boolean }> = ({
         <div className="text-[#F7F8F8] b2-regular mb-1">
           {deviceOS === 'android' ? 'Google Password Manager' : 'iCloud Keychain'}
         </div>
-        <p className="text-[#B6BAC3] label-regular">
+        <p className="text-[#B6BAC3] label-regular w-[200px] sm:w-auto">
           {deviceOS === 'android'
             ? 'Store backup on Google Password Manager using your preferred gmail account. The same account will be used for future recovery processes.'
             : 'Store backup on iCloud Keychain using your Apple ID. This Apple ID will be used for future recovery processes.'}
@@ -154,13 +157,12 @@ const FileBackupInstruction: React.FunctionComponent<{ isBlur: boolean }> = ({
 }) => {
   return (
     <div
-      className="relative flex p-2 w-[385px] lg:w-[24vw]"
+      className="relative flex-col sm:flex-row flex p-2 w-[200px] sm:w-[385px] lg:w-[34vw] xl:w-[432px]"
       style={{ background: '#111112', borderRadius: '8px', opacity: `${isBlur ? '0.5' : '1'}` }}>
-      <img
+      <Lottie
         className="mr-3 h-[223px] w-[104px] flex-none"
-        src="/v2/backup_export.gif"
-        alt="laptop"
-        style={{ height: 'auto' }}
+        animationData={backupExport}
+        loop={true}
       />
 
       <div className="flex flex-shrink flex-col">
@@ -199,7 +201,7 @@ const FileBackupInstruction: React.FunctionComponent<{ isBlur: boolean }> = ({
           </span>
         </div>
         <div className="text-[#F7F8F8] b2-regular mb-1">Export wallet</div>
-        <p className="text-[#B6BAC3] label-regular">
+        <p className="text-[#B6BAC3] label-regular w-[200px] sm:w-auto">
           Backup your wallet anytime by exporting it and saving it in any file storage or password
           managers of your choice i.e.{' '}
           <span className="label-bold">Device Storage/Google Drive</span> etc.
