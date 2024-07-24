@@ -3,9 +3,9 @@
 
 const parseSemverAsArray = (version: string) => {
   const parts = version.split('-');
-  if (parts.length > 1) {
-    return [...parts[0].split('.'), parts[1].split('.')[1]];
-  } else return parts[0].split('.');
+  return [...parts[0].split('.'), parts.length > 1 ? parts[1].split('.')[1] : '0'].map((e) =>
+    Number(e)
+  );
 };
 
 export const compareVersions = (version1: string, version2: string): number => {
