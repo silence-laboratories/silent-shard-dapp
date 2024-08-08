@@ -361,19 +361,17 @@ const App = () => {
   };
 
   const handlePairing = async () => {
-    if (await isConnected(provider)) {
-      await handleSnapState();
-      await handleInitPairing().then((isInitPairingDone) => {
-        if (isInitPairingDone) {
-          handleRunPairing().then(async (isPairingDone) => {
-            await setSnapVersion(provider);
-            if (isPairingDone) {
-              handleCreateAccount();
-            }
-          });
-        }
-      });
-    }
+    await handleSnapState();
+    await handleInitPairing().then((isInitPairingDone) => {
+      if (isInitPairingDone) {
+        handleRunPairing().then(async (isPairingDone) => {
+          await setSnapVersion(provider);
+          if (isPairingDone) {
+            handleCreateAccount();
+          }
+        });
+      }
+    });
   };
 
   const handleRePairing = async () => {
@@ -491,9 +489,6 @@ const App = () => {
   };
 
   const handleCreateAccount = async () => {
-    if (!(await isConnected(provider))) {
-      await handleMetaMaskConnect();
-    }
     let publicKey = '';
     try {
       const changeAppStateBeforeAccountCreation = () => {
@@ -710,9 +705,7 @@ const App = () => {
       status: AppStatus.Unpaired,
     });
     try {
-      if (await isConnected(provider)) {
-        await unPair(provider);
-      }
+      await unPair(provider);
     } catch (error: unknown) {
       if (error instanceof SnapError) {
         handleSnapErrorTemplate(error);
@@ -720,50 +713,60 @@ const App = () => {
     }
   }, []);
 
+  const handlePairState = useCallback(
+    (isAccountExist: boolean) => {
+      if (isAccountExist) {
+        // Distributed key is exist in storage but no Snap account created
+        setAppState({ status: AppStatus.AccountCreationDenied });
+      } else {
+        handleReset();
+      }
+    },
+    [handleReset]
+  );
+
+  const handleRepairState = useCallback((accounts: KeyringAccount[]) => {
+    const mismatchRepairingState = localStorage.getItem('MismatchRepairing'); // To keep restoration screen while reloading the page
+    if (mismatchRepairingState) {
+      const { snapAccountAddress, phoneAccountAddress } = JSON.parse(mismatchRepairingState);
+      setAppState({
+        account: accounts[0],
+        phoneAccountAddress,
+        snapAccountAddress,
+        status: AppStatus.MismatchRepairing,
+      });
+    } else {
+      setAppState({
+        status: AppStatus.AccountCreated,
+        account: accounts[0],
+      });
+    }
+  }, []);
+
   const handleSnapState = useCallback(async () => {
     try {
-      if (await isConnected(provider)) {
+      const connected = await isConnected(provider);
+      if (connected) {
         await handleSnapVersion();
-        const isPairedRes = await isPaired(provider);
-        if (isPairedRes.response?.isPaired) {
+        const isPairedRes = (await isPaired(provider)).response;
+        if (isPairedRes?.isPaired) {
           await setSnapVersion(provider);
-
           const accounts = await getKeyringClient(provider).listAccounts();
           if (accounts.length === 0) {
-            if (isPairedRes.response.isAccountExist) {
-              // Distributed key is exist but no snap wallet created
-              setAppState({ status: AppStatus.AccountCreationDenied });
-            } else {
-              handleReset();
-            }
+            handlePairState(isPairedRes.isAccountExist);
           } else {
-            // To keep restoration screen while reloading the page
-            const mismatchRepairingState = localStorage.getItem('MismatchRepairing');
-            if (mismatchRepairingState) {
-              const { snapAccountAddress, phoneAccountAddress } =
-                JSON.parse(mismatchRepairingState);
-              setAppState({
-                account: accounts[0],
-                phoneAccountAddress,
-                snapAccountAddress,
-                status: AppStatus.MismatchRepairing,
-              });
-            } else {
-              setAppState({
-                status: AppStatus.AccountCreated,
-                account: accounts[0],
-              });
-            }
+            handleRepairState(accounts);
           }
         }
       }
+
       setLoading(false);
     } catch (error) {
       if (error instanceof SnapError) {
         handleSnapErrorTemplate(error);
       }
     }
-  }, [handleReset, handleSnapVersion]);
+  }, [handleSnapVersion, handlePairState, handleRepairState]);
 
   const checkTimeSetting = async () => {
     if (document.visibilityState === 'visible') {
