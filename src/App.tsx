@@ -109,6 +109,8 @@ const App = () => {
         }
       } else if (code === 4) {
         toast(<ErrorToast msg={'Backup data is invalid'} />);
+      } else if (code === 21) {
+        toast(<ErrorToast msg={'Snap already paired'} />);
       } else {
         toast(<ErrorToast msg={UNKNOWN_ERR_TOAST_MSG} />);
       }
@@ -360,6 +362,7 @@ const App = () => {
 
   const handlePairing = async () => {
     if (await isConnected(provider)) {
+      await handleSnapState();
       await handleInitPairing().then((isInitPairingDone) => {
         if (isInitPairingDone) {
           handleRunPairing().then(async (isPairingDone) => {
