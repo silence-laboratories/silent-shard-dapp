@@ -2,7 +2,6 @@
 // This software is licensed under the Silence Laboratories License Agreement.
 
 import './index.css';
-import 'animate.css';
 
 import React, { ErrorInfo } from 'react';
 import ReactDOM from 'react-dom/client';
