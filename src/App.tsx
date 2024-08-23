@@ -31,6 +31,7 @@ import {
   WRONG_SECRET_KEY_ERR_MSG,
   WRONG_SECRET_KEY_TOAST_MSG,
 } from './api/error';
+import { checkTimeConsistency } from './api/fbFunctions';
 import {
   connectSnap,
   getKeyringClient,
@@ -59,6 +60,7 @@ import Homescreen from './screens/Homescreen';
 import Installation from './screens/Installation';
 import MismatchRepairing from './screens/MismatchRepairing';
 import Pairing from './screens/Pairing';
+import WrongTimezone from './screens/WrongTimezone';
 import { AppState, AppStatus, DeviceOS, ProviderRpcError, SnapMetaData } from './types';
 
 const MODE = process.env.REACT_APP_MODE!;
@@ -79,6 +81,7 @@ const App = () => {
   const [appState, setAppState] = useState<AppState>({ status: AppStatus.Unpaired });
   const [snapMetadata, setSnapMetadata] = useState<SnapMetaData | undefined>();
   const [deviceOS, setDeviceOS] = useState<DeviceOS>(DeviceOS.android);
+  const [isTimeSettingWrong, setIsTimeSettingWrong] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSnapErrorTemplate = (snapErr: SnapError, errorHandler?: any) => {
     const { code, message } = snapErr;
@@ -106,6 +109,8 @@ const App = () => {
         }
       } else if (code === 4) {
         toast(<ErrorToast msg={'Backup data is invalid'} />);
+      } else if (code === 21) {
+        toast(<ErrorToast msg={'Snap already paired'} />);
       } else {
         toast(<ErrorToast msg={UNKNOWN_ERR_TOAST_MSG} />);
       }
@@ -356,18 +361,17 @@ const App = () => {
   };
 
   const handlePairing = async () => {
-    if (await isConnected(provider)) {
-      await handleInitPairing().then((isInitPairingDone) => {
-        if (isInitPairingDone) {
-          handleRunPairing().then(async (isPairingDone) => {
-            await setSnapVersion(provider);
-            if (isPairingDone) {
-              handleCreateAccount();
-            }
-          });
-        }
-      });
-    }
+    await handleSnapState();
+    await handleInitPairing().then((isInitPairingDone) => {
+      if (isInitPairingDone) {
+        handleRunPairing().then(async (isPairingDone) => {
+          await setSnapVersion(provider);
+          if (isPairingDone) {
+            handleCreateAccount();
+          }
+        });
+      }
+    });
   };
 
   const handleRePairing = async () => {
@@ -485,9 +489,6 @@ const App = () => {
   };
 
   const handleCreateAccount = async () => {
-    if (!(await isConnected(provider))) {
-      await handleMetaMaskConnect();
-    }
     let publicKey = '';
     try {
       const changeAppStateBeforeAccountCreation = () => {
@@ -704,9 +705,7 @@ const App = () => {
       status: AppStatus.Unpaired,
     });
     try {
-      if (await isConnected(provider)) {
-        await unPair(provider);
-      }
+      await unPair(provider);
     } catch (error: unknown) {
       if (error instanceof SnapError) {
         handleSnapErrorTemplate(error);
@@ -714,54 +713,85 @@ const App = () => {
     }
   }, []);
 
+  const handlePairState = useCallback(
+    (isAccountExist: boolean) => {
+      if (isAccountExist) {
+        // Distributed key is exist in storage but no Snap account created
+        setAppState({ status: AppStatus.AccountCreationDenied });
+      } else {
+        handleReset();
+      }
+    },
+    [handleReset]
+  );
+
+  const handleRepairState = useCallback((accounts: KeyringAccount[]) => {
+    const mismatchRepairingState = localStorage.getItem('MismatchRepairing'); // To keep restoration screen while reloading the page
+    if (mismatchRepairingState) {
+      const { snapAccountAddress, phoneAccountAddress } = JSON.parse(mismatchRepairingState);
+      setAppState({
+        account: accounts[0],
+        phoneAccountAddress,
+        snapAccountAddress,
+        status: AppStatus.MismatchRepairing,
+      });
+    } else {
+      setAppState({
+        status: AppStatus.AccountCreated,
+        account: accounts[0],
+      });
+    }
+  }, []);
+
   const handleSnapState = useCallback(async () => {
     try {
-      if (await isConnected(provider)) {
+      const connected = await isConnected(provider);
+      if (connected) {
         await handleSnapVersion();
-        const isPairedRes = await isPaired(provider);
-        if (isPairedRes.response?.isPaired) {
+        const isPairedRes = (await isPaired(provider)).response;
+        if (isPairedRes?.isPaired) {
           await setSnapVersion(provider);
           const accounts = await getKeyringClient(provider).listAccounts();
           if (accounts.length === 0) {
-            if (isPairedRes.response.isAccountExist) {
-              setAppState({ status: AppStatus.AccountCreationDenied });
-            } else {
-              handleReset();
-            }
+            handlePairState(isPairedRes.isAccountExist);
           } else {
-            // To keep restoration screen while reloading the page
-            const mismatchRepairingState = localStorage.getItem('MismatchRepairing');
-            if (mismatchRepairingState) {
-              const { snapAccountAddress, phoneAccountAddress } =
-                JSON.parse(mismatchRepairingState);
-              setAppState({
-                account: accounts[0],
-                phoneAccountAddress,
-                snapAccountAddress,
-                status: AppStatus.MismatchRepairing,
-              });
-            } else {
-              setAppState({
-                status: AppStatus.AccountCreated,
-                account: accounts[0],
-              });
-            }
+            handleRepairState(accounts);
           }
         }
       }
+
       setLoading(false);
     } catch (error) {
       if (error instanceof SnapError) {
         handleSnapErrorTemplate(error);
       }
     }
-  }, [handleReset, handleSnapVersion]);
+  }, [handleSnapVersion, handlePairState, handleRepairState]);
+
+  const checkTimeSetting = async () => {
+    if (document.visibilityState === 'visible') {
+      try {
+        const isConsistent = await checkTimeConsistency();
+        setIsTimeSettingWrong(!isConsistent);
+      } catch (error) {
+        console.error('Error while checking time consistency:', error);
+        setIsTimeSettingWrong(false);
+      }
+    }
+  };
 
   useEffect(() => {
-    if (isIOS) window.location.href = 'https://apps.apple.com/in/app/silent-shard/id6468993285';
-    else if (isAndroid)
+    checkTimeSetting();
+    window.onfocus = function () {
+      checkTimeSetting();
+    };
+
+    if (isIOS) {
+      window.location.href = 'https://apps.apple.com/in/app/silent-shard/id6468993285';
+    } else if (isAndroid) {
       window.location.href =
         'https://play.google.com/store/apps/details?id=com.silencelaboratories.silentshard';
+    }
   }, []);
 
   useEffect(() => {
@@ -821,11 +851,17 @@ const App = () => {
     <div className="app-container">
       <NavBar />
       {/* Body */}
-
-      {(appState.status === AppStatus.AccountCreated || appState.status === AppStatus.RePaired) &&
-      appState.account &&
-      snapMetadata !== undefined &&
-      provider !== undefined ? (
+      {isTimeSettingWrong ? (
+        <WrongTimezone
+          onRetryClick={() => {
+            window.location.reload();
+          }}
+        />
+      ) : (appState.status === AppStatus.AccountCreated ||
+          appState.status === AppStatus.RePaired) &&
+        appState.account &&
+        snapMetadata !== undefined &&
+        provider !== undefined ? (
         <div className="flex flex-col flex-1">
           <Homescreen
             isRepaired={appState.status === AppStatus.RePaired}

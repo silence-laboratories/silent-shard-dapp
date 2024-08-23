@@ -3,21 +3,23 @@
 
 const parseSemverAsArray = (version: string) => {
   const parts = version.split('-');
-  if (parts.length > 1) {
-    return [...parts[0].split('.'), parts[1].split('.')[1]];
-  } else return parts[0].split('.');
+  return [...parts[0].split('.'), parts.length > 1 ? parts[1].split('.')[1] : '0'].map((e) =>
+    Number(e)
+  );
 };
 
 export const compareVersions = (version1: string, version2: string): number => {
   const parts1 = parseSemverAsArray(version1);
   const parts2 = parseSemverAsArray(version2);
-
   const minLength = Math.min(parts1.length, parts2.length);
 
   for (let i = 0; i < minLength; i++) {
-    if (parts1[i] < parts2[i]) {
+    const numericPart1 = Number(parts1[i]);
+    const numericPart2 = Number(parts2[i]);
+
+    if (numericPart1 < numericPart2) {
       return -1;
-    } else if (parts1[i] > parts2[i]) {
+    } else if (numericPart1 > numericPart2) {
       return 1;
     }
   }
