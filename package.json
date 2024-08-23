@@ -28,8 +28,8 @@
     "clsx": "^2.0.0",
     "debounce": "^2.0.0",
     "embla-carousel-react": "^8.0.2",
-    "lottie-react": "^2.4.0",
     "firebase": "^10.12.2",
+    "lottie-react": "^2.4.0",
     "lucide-react": "^0.295.0",
     "mixpanel-browser": "^2.48.1",
     "qrcode.react": "^3.1.0",
@@ -88,7 +88,8 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.4",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "webpack-bundle-analyzer": "^4.10.2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix"
