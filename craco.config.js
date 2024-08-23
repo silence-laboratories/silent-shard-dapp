@@ -1,6 +1,6 @@
 /* craco.config.js */
 const path = require(`path`);
-
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 module.exports = {
   webpack: {
     alias: {
@@ -18,5 +18,13 @@ module.exports = {
         },
       ],
     },
+    plugins: [
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'server',
+        analyzerHost: 'localhost',
+        analyzerPort: 4000,
+        openAnalyzer: true,
+      }),
+    ],
   },
 };

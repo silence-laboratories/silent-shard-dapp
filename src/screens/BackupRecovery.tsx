@@ -16,9 +16,8 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-
-import backupExport from '../lottie/backup_export.json';
-import backupGpm from '../lottie/backup_gpm.json';
+import { Skeleton } from '@/components/ui/skeleton';
+import useLottieAnimation from '@/hooks/useLottieAnimation';
 
 const BackupRecovery: React.FC<{
   onDone: () => void;
@@ -95,15 +94,21 @@ const StorageBackupContent: React.FC<{ deviceOS: string; isBlur: boolean }> = ({
   deviceOS,
   isBlur = false,
 }) => {
+  const { animationData: backupGpmAnimation, loading } = useLottieAnimation('backup_gpm');
+
   return (
     <div
       className="relative flex-col sm:flex-row flex p-2 w-[200px] sm:w-[385px] lg:w-[34vw] xl:w-[432px]"
       style={{ background: '#111112', borderRadius: '8px', opacity: `${isBlur ? '0.5' : '1'}` }}>
-      <Lottie
-        className="mr-3 h-[223px] w-[104px] flex-none"
-        animationData={backupGpm}
-        loop={true}
-      />
+      {!loading ? (
+        <Lottie
+          className="mr-3 h-[223px] w-[104px] flex-none"
+          animationData={backupGpmAnimation}
+          loop={true}
+        />
+      ) : (
+        <Skeleton className="w-full h-[223px] m-3 bg-[#23272E]" />
+      )}
 
       <div className="flex flex-shrink flex-col">
         <div className="text-[#6B7280] label-regular mt-7 mb-2">Option 1</div>
@@ -155,18 +160,22 @@ const StorageBackupContent: React.FC<{ deviceOS: string; isBlur: boolean }> = ({
 const FileBackupInstruction: React.FunctionComponent<{ isBlur: boolean }> = ({
   isBlur = false,
 }) => {
+  const { animationData: backupExportAnimation, loading } = useLottieAnimation('backup_export');
   return (
     <div
       className="relative flex-col sm:flex-row flex p-2 w-[200px] sm:w-[385px] lg:w-[34vw] xl:w-[432px]"
       style={{ background: '#111112', borderRadius: '8px', opacity: `${isBlur ? '0.5' : '1'}` }}>
-      <Lottie
-        className="mr-3 h-[223px] w-[104px] flex-none"
-        animationData={backupExport}
-        loop={true}
-      />
-
+      {!loading ? (
+        <Lottie
+          className="mr-3 h-[223px] w-[104px] flex-none"
+          animationData={backupExportAnimation}
+          loop={true}
+        />
+      ) : (
+        <Skeleton className="w-full h-[223px] m-3 bg-[#23272E]" />
+      )}
       <div className="flex flex-shrink flex-col">
-        <div className="text-[#6B7280] label-regular mt-7 mb-2">Option 2</div>
+        <div className="text-[#5d7094] label-regular mt-7 mb-2">Option 2</div>
         <div className="my-2 flex items-center space-x-2 flex-wrap">
           <svg
             xmlns="http://www.w3.org/2000/svg"

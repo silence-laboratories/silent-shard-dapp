@@ -9,8 +9,8 @@ import Footer from '@/components/Footer';
 import Layout from '@/components/Layout';
 import TermAndPolicy from '@/components/TermAndPolicy';
 import { Button } from '@/components/ui/button';
-
-import mmConnect from '../lottie/connect_mm.json';
+import { Skeleton } from '@/components/ui/skeleton';
+import useLottieAnimation from '@/hooks/useLottieAnimation';
 
 interface InstallationProps {
   onConnectMmClick: () => Promise<void>;
@@ -30,6 +30,8 @@ const Installation: React.FC<InstallationProps> = ({ onConnectMmClick, currentSn
       clearTimeout(toId);
     }, 30 * 60 * 1000);
   }
+
+  const { animationData: connectMMAnimation, loading } = useLottieAnimation('connect_mm');
 
   return (
     <div>
@@ -77,11 +79,15 @@ const Installation: React.FC<InstallationProps> = ({ onConnectMmClick, currentSn
             as shown in the video below.
           </div>
           <div className="mb-3 flex flex-col justify-center items-center flex-1">
-            <Lottie
-              className="h-auto rounded-[8px] border-gray-700 border p-1"
-              animationData={mmConnect}
-              loop={true}
-            />
+            {!loading ? (
+              <Lottie
+                className="h-auto rounded-[8px] border-gray-700 border p-1"
+                animationData={connectMMAnimation}
+                loop={true}
+              />
+            ) : (
+              <Skeleton className="w-full h-[254px] m-3 bg-[#23272E]" />
+            )}
             <Button
               className="max-sm:p-8 w-full mt-8 h-10 bg-indigo-primary hover:bg-indigo-hover active:bg-indigo-active text-white-primary btn-lg whitespace-normal"
               onClick={async () => {
