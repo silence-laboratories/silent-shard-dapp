@@ -7,3 +7,9 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const loadLottieJson = async (name: string) => {
+  const data = await fetch(`/lottie/${name}.json`);
+  if (data && data.ok) return data.json();
+  return null;
+};

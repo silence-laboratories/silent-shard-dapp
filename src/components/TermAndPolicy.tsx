@@ -1,8 +1,6 @@
 // Copyright (c) Silence Laboratories Pte. Ltd.
 // This software is licensed under the Silence Laboratories License Agreement.
 
-import React from 'react';
-
 export default function TermAndPolicy() {
   return (
     <div>
