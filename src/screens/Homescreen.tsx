@@ -28,9 +28,9 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import useLottieAnimation from '@/hooks/useLottieAnimation';
 import { compareVersions } from '@/utils/metamask';
-
-import whatNext from '../lottie/what_next.json';
 
 interface HomescreenProps {
   onContinueClick: () => void;
@@ -122,6 +122,8 @@ const Homescreen: React.FC<HomescreenProps> = ({
 
     console.log('current version:', currentSnapVersion);
   }, [latestSnapVersion, currentSnapVersion]);
+
+  const { animationData: whatNextAnimation, loading } = useLottieAnimation('what_next');
 
   return (
     <div className="animate__animated animate__slideInUp animate__faster">
@@ -488,13 +490,17 @@ const Homescreen: React.FC<HomescreenProps> = ({
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="flex flex-wrap lg:flex-nowrap mr-8">
-                      <Lottie
-                        className="ml-2"
-                        style={{ width: '100%', height: 'auto' }}
-                        animationData={whatNext}
-                        loop={true}
-                      />
+                    <div className="flex flex-wrap lg:flex-nowrap mr-8 min-h-[300px]">
+                      {!loading ? (
+                        <Lottie
+                          className="ml-2"
+                          style={{ width: '100%', height: 'auto' }}
+                          animationData={whatNextAnimation}
+                          loop={true}
+                        />
+                      ) : (
+                        <Skeleton className="w-full h-[300px] m-3 bg-[#23272E]" />
+                      )}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
