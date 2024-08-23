@@ -5,7 +5,7 @@
   "author": "Silence Laboratories",
   "license": "SEE LICENSE IN LICENSE.md",
   "dependencies": {
-    "@metamask/keyring-api": "^1.0.0-rc.1",
+    "@metamask/keyring-api": "^8.1.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-checkbox": "^1.0.4",
