@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 - Fix the time inconsistencies caused across devices due to timezone [`#21`](https://github.com-sl/silence-laboratories/silent-shard-dapp/pull/21)
 
+## [1.2.10]
+### Added
+- Add Firebase SDK to get server time [`5fca7a8`](https://github.com-sl/silence-laboratories/silent-shard-dapp/commit/5fca7a8a04db75ef0882104ab96df2b599a264c8)
+
+### Changed
+- Update UI
+- Replace gif with lottie [`#25`](https://github.com-sl/silence-laboratories/silent-shard-dapp/pull/25)
+
 ## [1.2.9]
 ### Added
 - Add backup Mixpanel event [`#19`](https://github.com-sl/silence-laboratories/silent-shard-dapp/pull/19)
