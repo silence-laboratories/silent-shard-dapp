@@ -23,7 +23,7 @@ jobs:
       - name: Build artifact
         run: |
           echo "${{ secrets.ENV_PROD }}" | base64 -d > .env
-          REACT_APP_MIX_PANEL_TOKEN=$REACT_APP_MIX_PANEL_TOKEN CI=false npm run build
+          REACT_APP_API_KEY=$REACT_APP_API_KEY REACT_APP_MIX_PANEL_TOKEN=$REACT_APP_MIX_PANEL_TOKEN CI=false npm run build
           7z a ./dapp-v2.7z ../silent-shard-dapp
 
       - name: Upload artifact
