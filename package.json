@@ -73,7 +73,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@craco/craco": "^7.1.0",
-    "@metamask/snaps-sdk": "^3.2.0",
+    "@metamask/snaps-sdk": "^6.7.0",
     "@types/mixpanel-browser": "^2.48.1",
     "@types/react-lazy-load-image-component": "^1.6.3",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
