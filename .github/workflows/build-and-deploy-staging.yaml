@@ -38,7 +38,7 @@ jobs:
     needs: build-and-deploy-staging
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: dapp-v2
           path: ./dapp-v2
