@@ -11,7 +11,7 @@ export default function Footer() {
       This Snap is powered by{' '}
       <a
         className="underline text-indigo-custom label-bold"
-        href="https://docs.silencelaboratories.com/duo"
+        href="https://silencelaboratories.com/silent-shard"
         onClick={() => {
           trackAnalyticEvent(
             EventName.view_website_page,

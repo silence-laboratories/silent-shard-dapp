@@ -14,7 +14,7 @@ jobs:
       REACT_APP_API_KEY: ${{ secrets.STAGING_REACT_APP_API_KEY }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
 
       - name: Install dependencies
@@ -28,7 +28,7 @@ jobs:
           7z a ./dapp-v2.7z ../silent-shard-dapp
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v6
         with:
           name: dapp-v2
           path: ./dapp-v2.7z
@@ -38,7 +38,7 @@ jobs:
     needs: build-and-deploy-staging
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: dapp-v2
           path: ./dapp-v2
